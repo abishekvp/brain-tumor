@@ -9,10 +9,11 @@ An end-to-end **Deep Learning & Quantum Machine Learning** web application built
 2. [Project Directory Structure](#project-directory-structure)
 3. [Issues Identified & Fixed](#issues-identified--fixed)
 4. [How to Run the Django Web Application](#how-to-run-the-django-web-application)
-5. [How to Build & Train the Models](#how-to-build--train-the-models)
-   - [1. Building the Hybrid Quantum-Classical ViT Classifier](#1-building-the-hybrid-quantum-classical-vit-classifier)
-   - [2. Building the U-Net Segmentation Models](#2-building-the-u-net-segmentation-models)
-   - [3. Deploying Newly Trained Weights to Django](#3-loading-newly-trained-weights-in-django)
+5. [How to Build, Train & Retrain the Models](#how-to-build-train--retrain-the-models)
+   - [1. Training the Hybrid Quantum-Classical ViT Classifier](#1-training-the-hybrid-quantum-classical-vit-classifier)
+   - [2. Training the U-Net Segmentation Models](#2-training-the-u-net-segmentation-models)
+   - [3. Training the Medical Assistant Chatbot Model](#3-training-the-medical-assistant-chatbot-model)
+   - [4. Deploying & Loading Newly Trained Weights in Django](#4-deploying--loading-newly-trained-weights-in-django)
 
 ---
 
@@ -195,18 +196,19 @@ python manage.py runserver
 
 ---
 
-## How to Build & Train the Models
+## How to Build, Train & Retrain the Models
 
-The project uses two types of deep learning models trained from the [`quantum vit model/`](./quantum%20vit%20model) directory, which automatically save their built checkpoints into the centralized [`models/`](./models) directory:
+The project utilizes three distinct model pipelines that automatically save their trained weights into the centralized [`models/`](../models) directory:
 1. **Hybrid Quantum-Classical Vision Transformer (`HybridQuantumViT`)** $\rightarrow$ saved to `models/classification/best_model.pth`.
-2. **2D U-Net Models** $\rightarrow$ saved to `models/segmentation/{Glioma.h5, Meningioma.h5, pituitory.h5, No Tumor.h5}`.
+2. **2D U-Net Segmentation Models** $\rightarrow$ saved to `models/segmentation/{Glioma.h5, Meningioma.h5, pituitory.h5, No Tumor.h5}`.
+3. **Medical Assistant Chatbot Model** $\rightarrow$ saved to `models/chatbot/{chatbot_model.h5, words.pkl, classes.pkl}`.
 
 ---
 
-### 1. Building the Hybrid Quantum-Classical ViT Classifier
+### 1. Training the Hybrid Quantum-Classical ViT Classifier
 
 #### Dataset Structure
-Ensure your classification dataset is organized in `ImageFolder` format under `quantum vit model/Classifications/DATASET/`:
+Organize your 4-class classification dataset in `ImageFolder` format under `quantum vit model/Classifications/DATASET/`:
 ```text
 quantum vit model/Classifications/DATASET/
 ├── TRAIN/
@@ -222,7 +224,7 @@ quantum vit model/Classifications/DATASET/
 ```
 
 #### Option A: Train via Command Line Script (Recommended)
-Run [`train_hybrid_quantum_vit.py`](./quantum%20vit%20model/Classifications/train_hybrid_quantum_vit.py):
+Run [`train_hybrid_quantum_vit.py`](../quantum%20vit%20model/Classifications/train_hybrid_quantum_vit.py):
 
 ```powershell
 cd "c:\Users\AbishekV\Documents\brain-tumor\quantum vit model\Classifications"
@@ -233,29 +235,33 @@ cd "c:\Users\AbishekV\Documents\brain-tumor\quantum vit model\Classifications"
     --batch-size 32 `
     --lr 0.0003
 ```
-- The script automatically uses a CUDA GPU (with mixed precision `AMP`) if available, or falls back to CPU.
-- By default, it saves the best checkpoint directly to `c:\Users\AbishekV\Documents\brain-tumor\models\classification\best_model.pth`.
 
-#### Option B: Train via Google Colab / Jupyter Notebook
-- Open [`quantum vit model/train_hybrid_quantum_vit_colab.ipynb`](./quantum%20vit%20model/train_hybrid_quantum_vit_colab.ipynb) in Google Colab (with a T4/L4 GPU runtime) or [`quantum vit model/Classifications/train_hybrid_quantum_vit.ipynb`](./quantum%20vit%20model/Classifications/train_hybrid_quantum_vit.ipynb) locally.
-- Run all cells sequentially to train, plot loss/accuracy/F1 curves, evaluate the confusion matrix, and export `best_model.pth` into `models/classification/best_model.pth`.
+- **GPU & Mixed Precision**: Automatically detects NVIDIA CUDA GPUs and enables `torch.cuda.amp.autocast` mixed precision. Falls back to CPU if no GPU is found.
+- **Output Destination**: The best checkpoint (evaluated by validation Macro-F1 score) is saved directly to:
+  `c:\Users\AbishekV\Documents\brain-tumor\models\classification\best_model.pth`.
+- **Memory Optimization**: If your GPU encounters out-of-memory errors, reduce batch size: `--batch-size 16` or `--batch-size 8`.
+
+#### Option B: Train via Google Colab (Free T4 Cloud GPU)
+- Open [`quantum vit model/train_hybrid_quantum_vit_colab.ipynb`](../quantum%20vit%20model/train_hybrid_quantum_vit_colab.ipynb) in **Google Colab**.
+- Set runtime to **GPU (T4)**: `Runtime > Change runtime type > T4 GPU`.
+- Execute all cells sequentially. Once training completes, download `best_model.pth` and place it in `models/classification/best_model.pth`.
 
 ---
 
-### 2. Building the U-Net Segmentation Models
+### 2. Training the U-Net Segmentation Models
 
 #### Dataset Structure
-Each tumor category under `quantum vit model/Segmentations/<Category>/DATASET/` contains paired MRI images and ground-truth binary masks:
+Each category under `quantum vit model/Segmentations/<Category>/DATASET/TRAIN/` contains paired MRI images and binary masks:
 ```text
 quantum vit model/Segmentations/<Category>/DATASET/
 └── TRAIN/
     ├── original/     # Input MRI images (.jpg / .png)
-    └── mask/         # Corresponding ground-truth binary tumor masks (.jpg / .png)
+    └── masks/        # Corresponding binary tumor masks (.jpg / .png)
 ```
 *(where `<Category>` is `Glioma`, `Meningioma`, `Pituitary`, or `No Tumor`)*.
 
-#### Option A: Train via Command Line Script (Recommended)
-Run [`train_unet_segmentation.py`](./quantum%20vit%20model/Segmentations/train_unet_segmentation.py) for each category (by default it saves directly into `models/segmentation/`):
+#### Train Each Tumor Category via Command Line:
+Navigate to the `Segmentations` directory:
 
 ```powershell
 cd "c:\Users\AbishekV\Documents\brain-tumor\quantum vit model\Segmentations"
@@ -269,19 +275,41 @@ cd "c:\Users\AbishekV\Documents\brain-tumor\quantum vit model\Segmentations"
 # 3. Train Pituitary U-Net -> saves to ../../models/segmentation/pituitory.h5
 ..\..\django\env\Scripts\python.exe train_unet_segmentation.py --category Pituitary --epochs 50 --batch-size 8
 
-# 4. Train No Tumor U-Net -> saves to "../../models/segmentation/No Tumor.h5"
+# 4. Train No Tumor U-Net -> saves to ../../models/segmentation/No Tumor.h5
 ..\..\django\env\Scripts\python.exe train_unet_segmentation.py --category "No Tumor" --epochs 50 --batch-size 8
 ```
 
-#### Option B: Train via Jupyter Notebooks
-Open and run the notebooks in each folder:
-- [`quantum vit model/Segmentations/Glioma/Glioma.ipynb`](./quantum%20vit%20model/Segmentations/Glioma/Glioma.ipynb)
-- [`quantum vit model/Segmentations/Meningioma/Meningioma.ipynb`](./quantum%20vit%20model/Segmentations/Meningioma/Meningioma.ipynb)
-- [`quantum vit model/Segmentations/Pituitary/Pituitary.ipynb`](./quantum%20vit%20model/Segmentations/Pituitary/Pituitary.ipynb)
-- [`quantum vit model/Segmentations/No Tumor/No_Tumor.ipynb`](./quantum%20vit%20model/Segmentations/No%20Tumor/No_Tumor.ipynb)
+#### Training Callbacks:
+- `ModelCheckpoint`: Saves only when `val_loss` achieves a new best.
+- `ReduceLROnPlateau`: Dynamically reduces learning rate by factor 0.1 after 5 epochs without improvement.
+- `EarlyStopping`: Halts training if `val_loss` does not improve for 12 epochs and restores best weights.
 
 ---
 
-### 3. Loading Newly Trained Weights in Django
+### 3. Training the Medical Assistant Chatbot Model
 
-Because the training scripts output directly to [`models/classification/`](./models/classification) and [`models/segmentation/`](./models/segmentation), and Django's [`settings.MODELS_DIR`](./django/Project/settings.py) reads directly from [`models/`](./models), no manual file copying is needed—simply restart `python manage.py runserver` to load any newly trained weights.
+Whenever you add new medical Q&A pairs, symptoms, or intent tags to [`django/chatbot/intents.json`](./chatbot/intents.json), retrain the NLP intent classifier:
+
+```powershell
+cd "c:\Users\AbishekV\Documents\brain-tumor\django\chatbot"
+
+..\env\Scripts\python.exe train_chatbot.py
+```
+
+This tokenizes patterns using NLTK WordNet lemmatization, trains the Keras neural network, and updates:
+- [`models/chatbot/chatbot_model.h5`](../models/chatbot/chatbot_model.h5)
+- [`models/chatbot/words.pkl`](../models/chatbot/words.pkl)
+- [`models/chatbot/classes.pkl`](../models/chatbot/classes.pkl)
+
+---
+
+### 4. Deploying & Loading Newly Trained Weights in Django
+
+Because all training scripts save directly into [`models/`](../models) and Django's [`settings.MODELS_DIR`](./Project/settings.py) dynamically points to that centralized directory:
+- **No manual file copying or moving is required.**
+- Simply restart the Django development server to load the new weights into memory:
+  ```powershell
+  cd "c:\Users\AbishekV\Documents\brain-tumor\django"
+  python manage.py runserver
+  ```
+- Navigate to `http://127.0.0.1:8000/model/` and submit an MRI to run inference with your newly trained models.
