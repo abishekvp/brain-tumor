@@ -11,6 +11,13 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Project.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 
 application = get_wsgi_application()
+
+try:
+    from app.apps import trigger_default_image_sync
+    trigger_default_image_sync()
+except Exception:
+    pass
+

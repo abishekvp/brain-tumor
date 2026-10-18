@@ -1,108 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile · Brain Tumor Segmentation</title>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile · Brain Tumor Segmentation{% endblock %}
+
+{% block extra_css %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ============================================================
-                   1.  GLOBAL RESET & ROOT VARIABLES
-                   ============================================================ */
-        :root {
-            --primary-dark: #0a2a3f;
-            --primary-mid: #1a5276;
-            --primary-blue: #2e86c1;
-            --primary-light: #5dade2;
-            --accent-teal: #1abc9c;
-            --accent-gold: #f39c12;
-            --bg-light: #f0f5fa;
-            --bg-card: #ffffff;
-            --text-dark: #0a1e2b;
-            --text-mid: #2c4a62;
-            --text-light: #6b8fa8;
-            --border-light: #dce6ef;
-            --shadow-sm: 0 4px 20px rgba(10, 42, 63, 0.08);
-            --shadow-md: 0 12px 40px rgba(10, 42, 63, 0.15);
-            --shadow-lg: 0 20px 60px rgba(10, 42, 63, 0.20);
-            --radius-lg: 32px;
-            --radius-md: 18px;
-            --radius-sm: 12px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
-            min-height: 100vh;
-            line-height: 1.6;
+        /* Prevent outer document scrolling so scrollbar stays strictly inside the profile section */
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
         /* ============================================================
-                   2.  NAVIGATION BAR
-                   ============================================================ */
-        .navbar {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-mid));
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 20px rgba(10, 42, 63, 0.25);
-            border-bottom: 3px solid var(--accent-teal);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
+           PROFILE SECTION SCROLL CONTAINER
+           ============================================================ */
+        .profile-scroll-section {
+            height: calc(100vh - 64px);
+            overflow-y: scroll;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            scrollbar-gutter: stable;
+            position: relative;
+            background: linear-gradient(145deg, #e8f0f8 0%, #d0e0ec 100%);
         }
 
-        .navbar .brand {
-            color: #fff;
-            font-size: 1.6rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
+        @media (max-width: 768px) {
+            .profile-scroll-section {
+                height: calc(100vh - 98px);
+            }
         }
 
-        .navbar .brand i {
-            color: var(--accent-teal);
+        /* Internal Scrollbar Styling */
+        .profile-scroll-section::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .navbar .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+        .profile-scroll-section::-webkit-scrollbar-track {
+            background: rgba(10, 42, 63, 0.04);
+            border-radius: 4px;
         }
-
-        .navbar .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1.2rem;
-            border-radius: 30px;
-            transition: var(--transition);
+        .profile-scroll-section::-webkit-scrollbar-thumb {
+            background: #9bbcd4;
+            border-radius: 4px;
         }
-
-        .navbar .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            transform: translateY(-2px);
+        .profile-scroll-section::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-mid, #1a5276);
         }
-
-        .navbar .nav-links a.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
+        .profile-scroll-section {
+            scrollbar-width: thin;
+            scrollbar-color: #9bbcd4 rgba(10, 42, 63, 0.04);
         }
 
         /* ============================================================
@@ -112,9 +59,9 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: calc(100vh - 80px);
-            padding: 2rem 1.5rem;
-            background: linear-gradient(145deg, #e8f0f8 0%, #d0e0ec 100%);
+            min-height: 100%;
+            padding: 2rem 1.5rem 3rem 1.5rem;
+            background: transparent;
             position: relative;
         }
 
@@ -456,18 +403,24 @@
         }
 
         .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--primary-dark);
-            margin-bottom: 6px;
-            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #0a2538;
+            margin-bottom: 8px;
+            letter-spacing: 0.25px;
         }
 
         .form-group label i {
-            margin-right: 10px;
-            color: var(--primary-blue);
+            margin-right: 2px;
+            color: var(--primary-blue, #2e86c1);
+            font-size: 1rem;
             width: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .form-group .form-control {
@@ -1017,8 +970,24 @@
                 --text-light: #7a9bb5;
             }
 
-            .profile-wrapper {
+            .profile-scroll-section {
                 background: #0a1a26;
+            }
+            .profile-scroll-section::-webkit-scrollbar-track {
+                background: #0a1a26;
+            }
+            .profile-scroll-section::-webkit-scrollbar-thumb {
+                background: #1f3a4a;
+            }
+            .profile-scroll-section::-webkit-scrollbar-thumb:hover {
+                background: #2e86c1;
+            }
+            .profile-scroll-section {
+                scrollbar-color: #1f3a4a #0a1a26;
+            }
+
+            .profile-wrapper {
+                background: transparent;
             }
 
             .profile-card {
@@ -1037,6 +1006,52 @@
             .form-section:hover {
                 border-color: #2a4a5a;
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            .user-info h1 {
+                color: #f0f6fc;
+            }
+
+            .form-section .form-heading {
+                color: #f0f6fc;
+            }
+
+            .form-section .form-heading i {
+                color: #38bdf8;
+            }
+
+            .form-group label {
+                color: #f0f6fc !important;
+                font-weight: 700;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            .form-group label i {
+                color: #38bdf8 !important;
+            }
+
+            .form-group .help-text {
+                color: #9cb5c7;
+            }
+
+            .form-group .help-text i {
+                color: #38bdf8;
+            }
+
+            .form-group .char-counter {
+                color: #8da8be;
+            }
+
+            .drop-zone p {
+                color: #b0c8d8;
+            }
+
+            .drop-zone i {
+                color: #38bdf8;
+            }
+
+            .drop-zone .browse-link {
+                color: #5dade2;
             }
 
             .user-info .user-specialty {
@@ -1146,32 +1161,16 @@
                 color: #e74c3c;
             }
 
-            .navbar {
-                background: linear-gradient(135deg, #06151f, #0a2a3f);
-                border-bottom: 3px solid var(--accent-teal);
-            }
         }
     </style>
-</head>
-<body>
+{% endblock extra_css %}
 
-    <!-- ===== NAVIGATION ===== -->
-    <nav class="navbar">
-        <a href="#" class="brand">
-            <i style="margin-top: 2%;" class="fas fa-brain"></i>
-            <span style="color:rgb(140, 250, 226);">Qubit Brain</span>
-        </a>
-        <div class="nav-links">
-            <a href="/"><i class="fas fa-home"></i> Home</a>
-            <a class="nav-link" href="{% url 'Database' %}"> Database</a>
-            <a href="/profile/" class="active"><i class="fas fa-user-circle"></i> Profile</a>
-            <a href="/logout/"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </nav>
+{% block content %}
 
-    <!-- ===== PROFILE ===== -->
-    <div class="profile-wrapper">
-        <div class="profile-card animate-fade-up">
+    <!-- ===== PROFILE SCROLLABLE SECTION ===== -->
+    <div class="profile-scroll-section" id="profileScrollSection">
+        <div class="profile-wrapper">
+            <div class="profile-card animate-fade-up">
 
             <div class="profile-card-inner">
 
@@ -1326,7 +1325,10 @@
             </div><!-- /profile-card-inner -->
         </div><!-- /profile-card -->
     </div><!-- /profile-wrapper -->
+    </div><!-- /profile-scroll-section -->
+{% endblock content %}
 
+{% block extra_js %}
     <!-- ============================================================
          JAVASCRIPT
          ============================================================ -->
@@ -1343,7 +1345,7 @@
                 if (avatarInput) {
                     avatarInput.click();
                 } else {
-                    alert('Avatar field not found. Please use the file input below.');
+                    (window.showProductAlert || alert)('Avatar field not found. Please use the file input below.', 'File Upload Notice');
                 }
             }
 
@@ -1372,13 +1374,13 @@
                         // Validate file type
                         const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                         if (!validTypes.includes(file.type)) {
-                            alert('Please select a valid image file (JPEG, PNG, GIF, WEBP).');
+                            (window.showProductAlert || alert)('Please select a valid image file (JPEG, PNG, GIF, WEBP).', 'Invalid Image Format', 'fas fa-exclamation-triangle');
                             this.value = '';
                             return;
                         }
                         // Validate file size (max 5MB)
                         if (file.size > 5 * 1024 * 1024) {
-                            alert('File is too large. Maximum size is 5MB.');
+                            (window.showProductAlert || alert)('The selected image is too large. Maximum allowed size is 5MB.', 'File Size Exceeded', 'fas fa-exclamation-triangle');
                             this.value = '';
                             return;
                         }
@@ -1607,6 +1609,4 @@
             console.log('User:', document.querySelector('#id_username')?.value || 'Unknown');
         });
     </script>
-
-</body>
-</html>
+{% endblock extra_js %}

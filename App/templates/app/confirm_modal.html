@@ -1,0 +1,394 @@
+<!-- ===== PRODUCT THEME CONFIRMATION & ALERT MODAL ===== -->
+<style>
+    /* Modal Overlay */
+    .product-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.25rem;
+        background: rgba(10, 30, 48, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                    visibility 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    .product-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Modal Backdrop Click Target */
+    .product-modal-backdrop {
+        position: absolute;
+        inset: 0;
+    }
+
+    /* Modal Dialog Card */
+    .product-modal-card {
+        position: relative;
+        background: #ffffff;
+        border-radius: 22px;
+        width: 100%;
+        max-width: 440px;
+        box-shadow: 0 25px 60px -12px rgba(10, 42, 63, 0.35),
+                    0 0 0 1px rgba(10, 42, 63, 0.08);
+        overflow: hidden;
+        z-index: 1;
+        transform: scale(0.92) translateY(12px);
+        transition: transform 0.28s cubic-bezier(0.34, 1.45, 0.64, 1);
+    }
+
+    .product-modal-overlay.active .product-modal-card {
+        transform: scale(1) translateY(0);
+    }
+
+    /* Top Accent Line */
+    .product-modal-accent {
+        height: 5px;
+        width: 100%;
+        background: linear-gradient(90deg, #e74c3c, #f39c12, #e74c3c);
+        background-size: 200% 100%;
+        animation: modalAccentGlow 3s ease infinite;
+    }
+
+    @keyframes modalAccentGlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Close Button (X) */
+    .product-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(10, 42, 63, 0.06);
+        color: #557288;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .product-modal-close:hover {
+        background: rgba(231, 76, 60, 0.12);
+        color: #e74c3c;
+        transform: rotate(90deg);
+    }
+
+    /* Modal Body Content */
+    .product-modal-body {
+        padding: 2rem 1.8rem 1.8rem;
+        text-align: center;
+    }
+
+    /* Icon Container */
+    .product-modal-icon-wrap {
+        width: 66px;
+        height: 66px;
+        border-radius: 50%;
+        margin: 0 auto 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        background: rgba(231, 76, 60, 0.12);
+        color: #e74c3c;
+        border: 2px solid rgba(231, 76, 60, 0.28);
+        box-shadow: 0 0 24px rgba(231, 76, 60, 0.18);
+        transition: transform 0.3s ease;
+    }
+
+    .product-modal-icon-wrap.info-icon {
+        background: rgba(46, 134, 193, 0.12);
+        color: #2e86c1;
+        border-color: rgba(46, 134, 193, 0.28);
+        box-shadow: 0 0 24px rgba(46, 134, 193, 0.18);
+    }
+
+    .product-modal-overlay.active .product-modal-icon-wrap {
+        transform: scale(1.05);
+    }
+
+    /* Title & Text */
+    .product-modal-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #0a2a3f;
+        letter-spacing: -0.3px;
+        margin-bottom: 0.6rem;
+    }
+
+    .product-modal-message {
+        font-size: 0.93rem;
+        line-height: 1.55;
+        color: #4a6a82;
+        margin-bottom: 1.75rem;
+    }
+
+    /* Modal Action Buttons */
+    .product-modal-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .product-modal-btn {
+        flex: 1;
+        padding: 0.75rem 1.2rem;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.22s ease;
+        text-decoration: none;
+    }
+
+    .product-modal-btn.btn-secondary {
+        background: #f0f5fa;
+        color: #2c4a62;
+        border: 1px solid #dce6ef;
+    }
+
+    .product-modal-btn.btn-secondary:hover {
+        background: #e2ecf5;
+        color: #0a2a3f;
+        border-color: #cbdbe8;
+        transform: translateY(-1px);
+    }
+
+    .product-modal-btn.btn-danger {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35);
+    }
+
+    .product-modal-btn.btn-danger:hover {
+        background: linear-gradient(135deg, #ff5742, #d63031);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(231, 76, 60, 0.45);
+    }
+
+    .product-modal-btn.btn-primary {
+        background: linear-gradient(135deg, #2e86c1, #1a5276);
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 4px 14px rgba(46, 134, 193, 0.35);
+    }
+
+    .product-modal-btn.btn-primary:hover {
+        background: linear-gradient(135deg, #3498db, #2e86c1);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(46, 134, 193, 0.45);
+    }
+
+    /* Dark Mode Theme */
+    @media (prefers-color-scheme: dark) {
+        .product-modal-card {
+            background: #142433;
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.65),
+                        0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .product-modal-close {
+            background: rgba(255, 255, 255, 0.08);
+            color: #8da4b8;
+        }
+
+        .product-modal-close:hover {
+            background: rgba(231, 76, 60, 0.25);
+            color: #ff6b6b;
+        }
+
+        .product-modal-title {
+            color: #e8f0f8;
+        }
+
+        .product-modal-message {
+            color: #9cb5c7;
+        }
+
+        .product-modal-btn.btn-secondary {
+            background: #1e3346;
+            color: #dce6ef;
+            border-color: #2b475e;
+        }
+
+        .product-modal-btn.btn-secondary:hover {
+            background: #253e54;
+            color: #ffffff;
+        }
+    }
+</style>
+
+<div id="productConfirmModalOverlay" class="product-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+    <div class="product-modal-backdrop" onclick="closeProductConfirmModal()"></div>
+    <div class="product-modal-card">
+        <div class="product-modal-accent" id="productModalAccent"></div>
+        <button type="button" class="product-modal-close" onclick="closeProductConfirmModal()" aria-label="Close modal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="product-modal-body">
+            <div class="product-modal-icon-wrap" id="productModalIconWrap">
+                <i class="fas fa-trash-alt" id="productModalIcon"></i>
+            </div>
+            <h3 class="product-modal-title" id="productModalTitle">Confirm Action</h3>
+            <p class="product-modal-message" id="productModalMessage">Are you sure you want to proceed?</p>
+            
+            <form id="productModalForm" method="POST" action="">
+                {% csrf_token %}
+                <div class="product-modal-actions">
+                    <button type="button" class="product-modal-btn btn-secondary" id="productModalCancelBtn" onclick="closeProductConfirmModal()">
+                        <i class="fas fa-times"></i> <span id="productModalCancelText">Cancel</span>
+                    </button>
+                    <button type="submit" class="product-modal-btn btn-danger" id="productModalConfirmBtn">
+                        <i class="fas fa-trash-alt" id="productModalConfirmIcon"></i>
+                        <span id="productModalConfirmText">Delete</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // Deduplicate DOM elements if template is included multiple times
+    const overlays = document.querySelectorAll('#productConfirmModalOverlay');
+    if (overlays.length > 1) {
+        for (let i = 1; i < overlays.length; i++) {
+            overlays[i].remove();
+        }
+    }
+    if (window.__productConfirmModalInitialized) return;
+    window.__productConfirmModalInitialized = true;
+
+    let pendingCallback = null;
+
+    window.openProductConfirmModal = function(options) {
+        options = options || {};
+        const overlay = document.getElementById('productConfirmModalOverlay');
+        const titleEl = document.getElementById('productModalTitle');
+        const messageEl = document.getElementById('productModalMessage');
+        const formEl = document.getElementById('productModalForm');
+        const confirmBtn = document.getElementById('productModalConfirmBtn');
+        const confirmTextEl = document.getElementById('productModalConfirmText');
+        const confirmIconEl = document.getElementById('productModalConfirmIcon');
+        const cancelBtn = document.getElementById('productModalCancelBtn');
+        const iconWrap = document.getElementById('productModalIconWrap');
+        const iconEl = document.getElementById('productModalIcon');
+        const accentEl = document.getElementById('productModalAccent');
+
+        if (!overlay) return;
+
+        titleEl.textContent = options.title || 'Confirm Action';
+        messageEl.textContent = options.message || 'Are you sure you want to proceed?';
+        
+        const isAlertOnly = !!options.isAlert;
+        pendingCallback = typeof options.onConfirm === 'function' ? options.onConfirm : null;
+
+        if (options.actionUrl) {
+            formEl.action = options.actionUrl;
+            formEl.style.display = '';
+        } else if (pendingCallback) {
+            formEl.action = '';
+            formEl.style.display = '';
+        }
+
+        const btnType = options.type || 'danger';
+        if (btnType === 'danger') {
+            confirmBtn.className = 'product-modal-btn btn-danger';
+            iconWrap.className = 'product-modal-icon-wrap';
+            accentEl.style.background = 'linear-gradient(90deg, #e74c3c, #f39c12, #e74c3c)';
+            iconEl.className = options.icon || 'fas fa-trash-alt';
+            confirmIconEl.className = options.confirmIcon || 'fas fa-trash-alt';
+        } else {
+            confirmBtn.className = 'product-modal-btn btn-primary';
+            iconWrap.className = 'product-modal-icon-wrap info-icon';
+            accentEl.style.background = 'linear-gradient(90deg, #1abc9c, #2e86c1, #1abc9c)';
+            iconEl.className = options.icon || 'fas fa-info-circle';
+            confirmIconEl.className = options.confirmIcon || 'fas fa-check';
+        }
+
+        confirmTextEl.textContent = options.confirmText || (isAlertOnly ? 'OK' : 'Confirm');
+
+        if (isAlertOnly) {
+            cancelBtn.style.display = 'none';
+            confirmBtn.onclick = function(e) {
+                e.preventDefault();
+                closeProductConfirmModal();
+                if (pendingCallback) pendingCallback();
+            };
+        } else {
+            cancelBtn.style.display = '';
+            confirmBtn.onclick = function(e) {
+                if (pendingCallback) {
+                    e.preventDefault();
+                    closeProductConfirmModal();
+                    pendingCallback();
+                }
+            };
+        }
+
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        cancelBtn.focus();
+    };
+
+    window.closeProductConfirmModal = function() {
+        const overlay = document.getElementById('productConfirmModalOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+        pendingCallback = null;
+    };
+
+    // Keyboard support: Escape closes modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const overlay = document.getElementById('productConfirmModalOverlay');
+            if (overlay && overlay.classList.contains('active')) {
+                closeProductConfirmModal();
+            }
+        }
+    });
+
+    // Provide a product-themed alert replacement
+    window.showProductAlert = function(message, title, icon) {
+        window.openProductConfirmModal({
+            title: title || 'Notification',
+            message: message,
+            isAlert: true,
+            type: 'info',
+            icon: icon || 'fas fa-info-circle',
+            confirmText: 'Got it'
+        });
+    };
+
+    // Override default alert if desired
+    window.alert = function(message) {
+        window.showProductAlert(message);
+    };
+})();
+</script>

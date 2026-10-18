@@ -1,32 +1,14 @@
-{% include 'chatbot/widget.html' %}
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+{% load static %}
 
-<head>
-  <!-- Basic -->
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <!-- Mobile Metas -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <!-- Site Metas -->
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-  <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjs0ry9Z2lOOVtjopBoTk80jBRbeWCHyyahQ&s" type="">
+{% block title %}Qubit Brain · AI Brain Tumor Segmentation System{% endblock %}
 
- <title> Qbit Brain · AI Brain Tumor Segmentation System </title>
-
+{% block extra_css %}
   <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
 
-  <!-- fonts style -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-
   <!--owl slider stylesheet -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-
-  <!-- font awesome style -->
-  <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
 
   <!-- Custom styles for this template -->
   <link href="/static/css/style.css" rel="stylesheet" />
@@ -34,22 +16,87 @@
   <link href="/static/css/responsive.css" rel="stylesheet" />
 
  <style>
-    /* ===== Global / full page sizing ===== */
+    /* Prevent outer document scrolling so scrollbar stays strictly inside the home section */
     html, body {
+        height: 100%;
         width: 100%;
         max-width: 100%;
         margin: 0;
         padding: 0;
-        overflow-x: hidden;   /* stops horizontal cropping */
+        overflow: hidden;
         -webkit-text-size-adjust: 100%;
+    }
+
+    /* ============================================================
+       HOME SECTION SCROLL CONTAINER
+       ============================================================ */
+    .home-scroll-section {
+        height: calc(100vh - 64px);
+        overflow-y: scroll;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        scrollbar-gutter: stable;
+        position: relative;
+    }
+
+    @media (max-width: 768px) {
+        .home-scroll-section {
+            height: calc(100vh - 98px);
+        }
+    }
+
+    /* Internal Scrollbar Styling */
+    .home-scroll-section::-webkit-scrollbar {
+        width: 8px;
+    }
+    .home-scroll-section::-webkit-scrollbar-track {
+        background: rgba(10, 42, 63, 0.04);
+        border-radius: 4px;
+    }
+    .home-scroll-section::-webkit-scrollbar-thumb {
+        background: #9bbcd4;
+        border-radius: 4px;
+    }
+    .home-scroll-section::-webkit-scrollbar-thumb:hover {
+        background: #1a5276;
+    }
+    .home-scroll-section {
+        scrollbar-width: thin;
+        scrollbar-color: #9bbcd4 rgba(10, 42, 63, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .home-scroll-section::-webkit-scrollbar-track {
+            background: #0a1a26;
+        }
+        .home-scroll-section::-webkit-scrollbar-thumb {
+            background: #1f3a4a;
+        }
+        .home-scroll-section::-webkit-scrollbar-thumb:hover {
+            background: #2e86c1;
+        }
+        .home-scroll-section {
+            scrollbar-color: #1f3a4a #0a1a26;
+        }
     }
 
     /* ===== HERO BACKGROUND VIDEO ===== */
     .hero_area {
         position: relative;
         width: 100%;
-        min-height: 100vh;
+        min-height: calc(100vh - 64px);
         overflow: hidden;
+        padding-top: 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+        .hero_area {
+            min-height: calc(100vh - 98px);
+        }
     }
 
     .hero_bg_box {
@@ -238,12 +285,11 @@
         box-shadow: none !important;
     }
 </style>
+{% endblock extra_css %}
 
-
-</head>
-
-<body>
-
+{% block content %}
+<!-- ===== HOME SCROLLABLE SECTION ===== -->
+<div class="home-scroll-section" id="homeScrollSection">
   <div class="hero_area">
 
     <div class="hero_bg_box">
@@ -257,60 +303,10 @@
         Your browser does not support the video tag.
       </video>
     </div>
-
-    <!-- header section strats -->
-    <header class="header_section">
-      <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg custom_nav-container ">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <i class="fas fa-brain" style= "color:rgb(140, 250, 226); font-size: 1.8rem; margin-left: 5px margin-right: 5px;"></i>
-          <span style="color:rgb(140, 250, 226);">Qubit Brain . </span>
-          <span>Brain Tumor Segmentation System</span>
-      </a>
-                
-              
-
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class=""> </span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav">
-              {% if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'users-home' %}"> Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'users-profile' %}"> Profile</a>
-              </li>
-               <li class="nav-item">
-                <a class="nav-link" href="{% url 'model' %}">Model</a>
-              </li>
-          
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'Database' %}"> DATABASE</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout_view' %}">Logout</a>
-              </li>
-          
-             
-              {% else %}
-              <li class="nav-item active">
-                <a class="nav-link" href="{% url 'login' %}">Login <span class="sr-only">(current)</span></a>
-              </li>
-              {% endif %}
-             
-            </ul>
-          </div>
-        </nav>
-      </div>
-    </header>
-    <!-- end header section -->
     {% if user.is_authenticated %}
     <!-- slider section -->
    <section class="slider_section">
-    <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+    <div id="customCarousel" class="carousel slide" data-ride="carousel">
       <div class="carousel-inner">
 
         <!-- Slide 1 -->
@@ -385,9 +381,9 @@
       </div>
 
       <ol class="carousel-indicators">
-        <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
-        <li data-target="#customCarousel1" data-slide-to="1"></li>
-        <li data-target="#customCarousel1" data-slide-to="2"></li>
+        <li data-target="#customCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#customCarousel" data-slide-to="1"></li>
+        <li data-target="#customCarousel" data-slide-to="2"></li>
       </ol>
 
     </div>
@@ -396,7 +392,7 @@
   
       {% else %}
       <section class="slider_section">
-        <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+        <div id="customCarousel" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner">
 
             <!-- Login Slide -->
@@ -448,8 +444,8 @@
           </div>
 
           <ol class="carousel-indicators">
-            <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
-            <li data-target="#customCarousel1" data-slide-to="1"></li>
+            <li data-target="#customCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#customCarousel" data-slide-to="1"></li>
           </ol>
 
         </div>
@@ -784,8 +780,10 @@
 
   
   {% endif %}
-  <!-- jQery -->
-  <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+</div><!-- /.home-scroll-section -->
+{% endblock content %}
+
+{% block extra_js %}
   <!-- popper js -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
   </script>
@@ -796,14 +794,6 @@
   </script>
   <!-- custom js -->
   <script type="text/javascript" src="/static/js/custom.js"></script>
-  <!-- Google Map -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
-  </script>
-  <!-- End Google Map -->
-
-</body>
-
-</html>
 
 <script>
 const video = document.querySelector('.bg-video');
@@ -840,3 +830,4 @@ if (video) {
     });
 }
 </script>
+{% endblock extra_js %}

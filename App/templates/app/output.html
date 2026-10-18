@@ -1,113 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ predict | upper }} · Brain Tumor Segmentation</title>
+
+{% block title %}{{ predict | upper }} · Brain Tumor Segmentation Results{% endblock %}
+
+{% block extra_css %}
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ============================================================
-                   ROOT VARIABLES & RESET
-                   ============================================================ */
-        :root {
-            --primary-dark: #0a2a3f;
-            --primary-mid: #1a5276;
-            --primary-blue: #2e86c1;
-            --primary-light: #5dade2;
-            --accent-teal: #1abc9c;
-            --accent-green: #27ae60;
-            --bg-light: #f0f5fa;
-            --bg-card: #ffffff;
-            --text-dark: #0a1e2b;
-            --text-mid: #2c4a62;
-            --text-light: #6b8fa8;
-            --border-light: #dce6ef;
-            --shadow-sm: 0 4px 20px rgba(10, 42, 63, 0.08);
-            --shadow-md: 0 12px 40px rgba(10, 42, 63, 0.15);
-            --shadow-lg: 0 20px 60px rgba(10, 42, 63, 0.20);
-            --radius-lg: 32px;
-            --radius-md: 18px;
-            --radius-sm: 12px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
-            min-height: 100vh;
-        }
-
-        /* ============================================================
-                   NAVIGATION
-                   ============================================================ */
-        .nav-custom {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-mid));
-            padding: 1rem 1.5rem;
-            box-shadow: 0 4px 20px rgba(10, 42, 63, 0.25);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            border-bottom: 3px solid var(--accent-teal);
-        }
-
-        .nav-custom .brand {
-            color: #fff;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-custom .brand i {
-            color: var(--accent-teal);
-            font-size: 2rem;
-        }
-
-        .nav-custom .brand span {
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .nav-custom .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .nav-custom .nav-links a {
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1.2rem;
-            border-radius: 30px;
-            transition: var(--transition);
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-custom .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-        .nav-custom .nav-links a i {
-            font-size: 0.9rem;
-        }
 
         /* ============================================================
                    MAIN CONTAINER
@@ -140,10 +38,21 @@
             font-size: 1.3rem;
         }
 
-        .result-badge.pituitary { background: #8e44ad; }
-        .result-badge.meningioma { background: #e67e22; }
-        .result-badge.glioma { background: #c0392b; }
-        .result-badge.notumor { background: #27ae60; }
+        .result-badge.pituitary {
+            background: #8e44ad;
+        }
+
+        .result-badge.meningioma {
+            background: #e67e22;
+        }
+
+        .result-badge.glioma {
+            background: #c0392b;
+        }
+
+        .result-badge.notumor {
+            background: #27ae60;
+        }
 
         /* ============================================================
                    CARD
@@ -176,9 +85,17 @@
         }
 
         @keyframes shimmerBar {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 0%; }
-            100% { background-position: 0% 0%; }
+            0% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 0%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
         }
 
         .card-inner {
@@ -226,6 +143,8 @@
         }
 
         .image-box img {
+            display: block;
+            margin: 0 auto;
             width: 100%;
             max-width: 300px;
             height: auto;
@@ -350,10 +269,21 @@
             flex-shrink: 0;
         }
 
-        .tumor-type-title .icon-circle.glioma { background: #c0392b; }
-        .tumor-type-title .icon-circle.meningioma { background: #e67e22; }
-        .tumor-type-title .icon-circle.pituitary { background: #8e44ad; }
-        .tumor-type-title .icon-circle.notumor { background: #27ae60; }
+        .tumor-type-title .icon-circle.glioma {
+            background: #c0392b;
+        }
+
+        .tumor-type-title .icon-circle.meningioma {
+            background: #e67e22;
+        }
+
+        .tumor-type-title .icon-circle.pituitary {
+            background: #8e44ad;
+        }
+
+        .tumor-type-title .icon-circle.notumor {
+            background: #27ae60;
+        }
 
         .tumor-type-title h2 {
             font-size: 2rem;
@@ -482,6 +412,118 @@
         }
 
         /* ============================================================
+                   DETAILS ACTION BAR & BUTTONS
+                   ============================================================ */
+        .details-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .details-action-bar .result-badge {
+            margin-bottom: 0;
+        }
+
+        .details-action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .detail-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.6rem 1.25rem;
+            border-radius: 30px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            line-height: 1.2;
+        }
+
+        .detail-btn-back {
+            background: #ffffff;
+            color: var(--text-mid);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .detail-btn-back:hover {
+            background: #f0f5fa;
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .detail-btn-secondary {
+            background: rgba(46, 134, 193, 0.12);
+            color: var(--primary-blue);
+            border: 1px solid rgba(46, 134, 193, 0.3);
+        }
+
+        .detail-btn-secondary:hover {
+            background: var(--primary-blue);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .detail-btn-danger {
+            background: rgba(231, 76, 60, 0.12);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.35);
+        }
+
+        .detail-btn-danger:hover {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #ffffff;
+            border-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35);
+        }
+
+        .details-bottom-panel {
+            margin-top: 2.5rem;
+            padding: 1.4rem 1.8rem;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+        }
+
+        .details-bottom-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-mid);
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+
+        .details-bottom-info i {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        .details-bottom-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* ============================================================
                    DARK MODE
                    ============================================================ */
         @media (prefers-color-scheme: dark) {
@@ -541,34 +583,57 @@
             .result-badge {
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             }
+
+            .detail-btn-back {
+                background: #162a38;
+                color: #dce6ef;
+                border-color: #1f3a4a;
+            }
+
+            .detail-btn-back:hover {
+                background: #1f3a4a;
+                color: #ffffff;
+            }
+
+            .details-bottom-panel {
+                background: #12222e;
+                border-color: #1f3a4a;
+            }
+
+            .details-bottom-info {
+                color: #b0c8d8;
+            }
         }
     </style>
-</head>
-<body>
+{% endblock extra_css %}
 
-    <!-- ===== NAVIGATION ===== -->
-    <nav class="nav-custom">
-        <div class="container mx-auto flex justify-between items-center flex-wrap">
-            <a href="#" class="brand">
-            <i style="margin-top: 2%;" class="fas fa-brain"></i>
-            <span style="color:rgb(140, 250, 226);">Qubit Brain</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="{% url 'model' %}"><i class="fas fa-robot"></i> Model</a></li>
-                <li><a href="{% url 'Database' %}"><i class="fas fa-database"></i> Database</a></li>
-            </ul>
-        </div>
-    </nav>
+{% block content %}
 
     <!-- ===== MAIN ===== -->
     <div class="main-container">
 
-        <!-- Result Badge -->
-        <div class="result-badge {% if predict|lower == 'pituitary' %}pituitary{% elif predict|lower == 'meningioma' %}meningioma{% elif predict|lower == 'glioma' %}glioma{% elif predict|lower == 'no tumor' %}notumor{% endif %}">
-            <i class="fas fa-stethoscope"></i>
-            Diagnosis Result: <strong>{{ predict | upper }}</strong>
-            <i class="fas fa-check-circle" style="margin-left: 4px;"></i>
+        <!-- ===== DETAILS ACTION BAR ===== -->
+        <div class="details-action-bar">
+            <div
+                class="result-badge {% if predict|lower == 'pituitary' %}pituitary{% elif predict|lower == 'meningioma' %}meningioma{% elif predict|lower == 'glioma' %}glioma{% elif predict|lower == 'no tumor' %}notumor{% endif %}">
+                <i class="fas fa-stethoscope"></i>
+                Diagnosis Result: <strong>{{ predict | upper }}</strong>
+                <i class="fas fa-check-circle" style="margin-left: 4px;"></i>
+            </div>
+
+            <div class="details-action-buttons">
+                <a href="{% url 'database' %}" class="detail-btn detail-btn-back">
+                    <i class="fas fa-database"></i> Database
+                </a>
+                <a href="{% url 'model' %}" class="detail-btn detail-btn-secondary">
+                    <i class="fas fa-plus"></i> New Scan
+                </a>
+                {% if obj %}
+                <button type="button" class="detail-btn detail-btn-danger" onclick="confirmDeleteDetail('{% url 'delete_image' obj.id %}', '{{ obj.id }}', '{{ predict|escapejs }}');">
+                    <i class="fas fa-trash-alt"></i> Delete Record
+                </button>
+                {% endif %}
+            </div>
         </div>
 
         <!-- ===== CARD ===== -->
@@ -586,7 +651,7 @@
                         </div>
                         <img src="{{ obj.image.url }}" alt="Original brain MRI" loading="lazy">
                     </div>
-                    {% if mask_uri %}
+                    <!-- {% if mask_uri %}
                     <div class="image-box">
                         <div class="image-label">
                             <i class="fas fa-layer-group"></i>
@@ -594,7 +659,7 @@
                         </div>
                         <img src="{{ mask_uri }}" alt="Binary segmentation mask" loading="lazy">
                     </div>
-                    {% endif %}
+                    {% endif %} -->
                     <div class="image-box">
                         <div class="image-label">
                             <i class="fas fa-microscope"></i>
@@ -619,100 +684,287 @@
                         Highlighted Region Area: <strong>{{ tumor_area_pct }}%</strong>
                     </div>
                     {% endif %}
+                    {% if obj.created_at %}
+                    <div class="confidence">
+                        <i class="fas fa-calendar-alt"></i>
+                        Identified On: <strong>{{ obj.created_at|date:"d M Y, h:i A" }}</strong>
+                    </div>
+                    {% endif %}
                 </div>
 
 
                 <!-- ===== DETAILS ===== -->
                 {% if obj %}
-                    <div class="tumor-type-title">
-                        <div class="icon-circle 
+                <div class="tumor-type-title">
+                    <div class="icon-circle 
                             {% if predict|lower == 'glioma' %}glioma
                             {% elif predict|lower == 'meningioma' %}meningioma
                             {% elif predict|lower == 'pituitary' %}pituitary
                             {% elif predict|lower == 'no tumor' %}notumor{% endif %}">
-                            <i class="fas 
+                        <i class="fas 
                                 {% if predict|lower == 'glioma' %}fa-bolt
                                 {% elif predict|lower == 'meningioma' %}fa-shield-alt
                                 {% elif predict|lower == 'pituitary' %}fa-dna
                                 {% elif predict|lower == 'no tumor' %}fa-check{% endif %}">
-                            </i>
-                        </div>
-                        <h2>{{ predict }} Details</h2>
+                        </i>
                     </div>
+                    <h2>{{ predict }} Details</h2>
+                </div>
 
-                    {% if predict|lower == 'glioma' %}
-                    <table class="info-table">
-                        <tr><th><i class="fas fa-info-circle"></i> Description</th><td>Gliomas are a type of tumor that starts in the glial cells of the brain or spinal cord. They can be low-grade (slow-growing) or high-grade (aggressive and fast-growing), and their impact depends on size, location, and grade.</td></tr>
-                        <tr><th><i class="fas fa-exclamation-triangle"></i> Causes</th><td>The exact cause is unknown, but risk factors include genetic mutations, family history of brain tumors, exposure to radiation, and certain inherited syndromes.</td></tr>
-                        <tr><th><i class="fas fa-shield-virus"></i> Prevention</th><td>There is no sure way to prevent gliomas, but reducing exposure to harmful radiation, maintaining a healthy lifestyle, and going for regular check-ups may help in early detection.</td></tr>
-                        <tr><th><i class="fas fa-hospital"></i> Treatment</th><td>Treatment options depend on tumor type, size, and grade. They may include surgery, radiation therapy, chemotherapy, targeted therapy, or a combination of these approaches.</td></tr>
-                        <tr><th><i class="fas fa-utensils"></i> Diet</th><td>Adopt a nutrient-rich diet with plenty of fruits, vegetables, whole grains, and lean proteins. Foods rich in omega-3 fatty acids may be beneficial.</td></tr>
-                        <tr><th><i class="fas fa-running"></i> Physical Activity</th><td>Engage in light to moderate exercise, such as walking, yoga, or stretching, as tolerated. Physical activity supports overall health and recovery.</td></tr>
-                        <tr><th><i class="fas fa-weight"></i> Body Condition</th><td>Maintaining a healthy weight and good physical condition can improve treatment outcomes. Patients may require rehabilitation to maintain strength.</td></tr>
-                        <tr><th><i class="fas fa-users"></i> Affected Age</th><td>Gliomas can occur at any age but are more common in adults between 45 and 65 years old.</td></tr>
-                        <tr><th><i class="fas fa-plus-circle"></i> Additional Info</th><td>Gliomas can range from slow-growing benign-like tumors to highly aggressive forms such as glioblastoma. Early diagnosis and multidisciplinary treatment improve outcomes.</td></tr>
-                    </table>
+                {% if predict|lower == 'glioma' %}
+                <table class="info-table">
+                    <tr>
+                        <th><i class="fas fa-info-circle"></i> Description</th>
+                        <td>Gliomas are a type of tumor that starts in the glial cells of the brain or spinal cord. They
+                            can be low-grade (slow-growing) or high-grade (aggressive and fast-growing), and their
+                            impact depends on size, location, and grade.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-exclamation-triangle"></i> Causes</th>
+                        <td>The exact cause is unknown, but risk factors include genetic mutations, family history of
+                            brain tumors, exposure to radiation, and certain inherited syndromes.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-shield-virus"></i> Prevention</th>
+                        <td>There is no sure way to prevent gliomas, but reducing exposure to harmful radiation,
+                            maintaining a healthy lifestyle, and going for regular check-ups may help in early
+                            detection.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-hospital"></i> Treatment</th>
+                        <td>Treatment options depend on tumor type, size, and grade. They may include surgery, radiation
+                            therapy, chemotherapy, targeted therapy, or a combination of these approaches.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-utensils"></i> Diet</th>
+                        <td>Adopt a nutrient-rich diet with plenty of fruits, vegetables, whole grains, and lean
+                            proteins. Foods rich in omega-3 fatty acids may be beneficial.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-running"></i> Physical Activity</th>
+                        <td>Engage in light to moderate exercise, such as walking, yoga, or stretching, as tolerated.
+                            Physical activity supports overall health and recovery.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-weight"></i> Body Condition</th>
+                        <td>Maintaining a healthy weight and good physical condition can improve treatment outcomes.
+                            Patients may require rehabilitation to maintain strength.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-users"></i> Affected Age</th>
+                        <td>Gliomas can occur at any age but are more common in adults between 45 and 65 years old.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-plus-circle"></i> Additional Info</th>
+                        <td>Gliomas can range from slow-growing benign-like tumors to highly aggressive forms such as
+                            glioblastoma. Early diagnosis and multidisciplinary treatment improve outcomes.</td>
+                    </tr>
+                </table>
 
-                    {% elif predict|lower == 'meningioma' %}
-                    <table class="info-table">
-                        <tr><th><i class="fas fa-info-circle"></i> Description</th><td>Meningiomas are typically slow-growing tumors that arise from the meninges, the protective membranes covering the brain and spinal cord. Most are benign, but some may be atypical or malignant.</td></tr>
-                        <tr><th><i class="fas fa-exclamation-triangle"></i> Causes</th><td>The exact cause is not always known. Risk factors include genetic mutations, previous exposure to ionizing radiation, hormonal influences, and family history.</td></tr>
-                        <tr><th><i class="fas fa-shield-virus"></i> Prevention</th><td>There is no guaranteed prevention, but reducing exposure to unnecessary radiation, maintaining overall brain health, and regular medical check-ups may lower risk.</td></tr>
-                        <tr><th><i class="fas fa-hospital"></i> Treatment</th><td>Treatment may involve surgical removal, radiation therapy, or careful monitoring for small, asymptomatic tumors. Treatment depends on size, location, and symptoms.</td></tr>
-                        <tr><th><i class="fas fa-utensils"></i> Diet</th><td>A nutrient-rich diet with plenty of fruits, vegetables, whole grains, and lean proteins supports overall brain health. Limit processed foods and refined sugars.</td></tr>
-                        <tr><th><i class="fas fa-running"></i> Physical Activity</th><td>Moderate physical activity such as walking, yoga, or swimming helps improve circulation and support recovery after treatment.</td></tr>
-                        <tr><th><i class="fas fa-weight"></i> Body Condition</th><td>Maintaining a healthy weight and balanced lifestyle can reduce risk factors. Patients should follow individualized medical and rehabilitation plans.</td></tr>
-                        <tr><th><i class="fas fa-users"></i> Affected Age</th><td>Meningiomas most commonly occur in adults between 40 and 70 years, and are more frequent in women than men. They are rare in children.</td></tr>
-                        <tr><th><i class="fas fa-plus-circle"></i> Additional Info</th><td>While most meningiomas are non-cancerous, their location can cause neurological symptoms such as headaches, vision problems, or seizures. Regular MRI scans are used to monitor growth.</td></tr>
-                    </table>
+                {% elif predict|lower == 'meningioma' %}
+                <table class="info-table">
+                    <tr>
+                        <th><i class="fas fa-info-circle"></i> Description</th>
+                        <td>Meningiomas are typically slow-growing tumors that arise from the meninges, the protective
+                            membranes covering the brain and spinal cord. Most are benign, but some may be atypical or
+                            malignant.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-exclamation-triangle"></i> Causes</th>
+                        <td>The exact cause is not always known. Risk factors include genetic mutations, previous
+                            exposure to ionizing radiation, hormonal influences, and family history.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-shield-virus"></i> Prevention</th>
+                        <td>There is no guaranteed prevention, but reducing exposure to unnecessary radiation,
+                            maintaining overall brain health, and regular medical check-ups may lower risk.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-hospital"></i> Treatment</th>
+                        <td>Treatment may involve surgical removal, radiation therapy, or careful monitoring for small,
+                            asymptomatic tumors. Treatment depends on size, location, and symptoms.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-utensils"></i> Diet</th>
+                        <td>A nutrient-rich diet with plenty of fruits, vegetables, whole grains, and lean proteins
+                            supports overall brain health. Limit processed foods and refined sugars.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-running"></i> Physical Activity</th>
+                        <td>Moderate physical activity such as walking, yoga, or swimming helps improve circulation and
+                            support recovery after treatment.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-weight"></i> Body Condition</th>
+                        <td>Maintaining a healthy weight and balanced lifestyle can reduce risk factors. Patients should
+                            follow individualized medical and rehabilitation plans.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-users"></i> Affected Age</th>
+                        <td>Meningiomas most commonly occur in adults between 40 and 70 years, and are more frequent in
+                            women than men. They are rare in children.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-plus-circle"></i> Additional Info</th>
+                        <td>While most meningiomas are non-cancerous, their location can cause neurological symptoms
+                            such as headaches, vision problems, or seizures. Regular MRI scans are used to monitor
+                            growth.</td>
+                    </tr>
+                </table>
 
-                    {% elif predict|lower == 'pituitary' %}
-                    <table class="info-table">
-                        <tr><th><i class="fas fa-info-circle"></i> Description</th><td>Pituitary tumors are abnormal growths that develop in the pituitary gland, a small gland at the base of the brain that controls many body functions through hormone production. Most are benign but can affect hormone balance.</td></tr>
-                        <tr><th><i class="fas fa-exclamation-triangle"></i> Causes</th><td>The exact cause is often unknown. Genetic mutations, hereditary conditions such as Multiple Endocrine Neoplasia type 1 (MEN1), or abnormal cell growth may contribute.</td></tr>
-                        <tr><th><i class="fas fa-shield-virus"></i> Prevention</th><td>There is no guaranteed way to prevent pituitary tumors. Regular health check-ups, early detection of hormonal imbalances, and monitoring for genetic risk factors help in early diagnosis.</td></tr>
-                        <tr><th><i class="fas fa-hospital"></i> Treatment</th><td>Treatment options may include surgery to remove the tumor, medications to regulate hormone levels, or radiation therapy. The treatment plan depends on the tumor's size, type, and impact.</td></tr>
-                        <tr><th><i class="fas fa-utensils"></i> Diet</th><td>Maintain a nutrient-rich diet with plenty of vegetables, fruits, whole grains, and lean proteins. Reducing processed foods and excess sugar supports overall health.</td></tr>
-                        <tr><th><i class="fas fa-running"></i> Physical Activity</th><td>Engage in moderate physical activities such as walking, yoga, or cycling. Exercise can improve overall health and reduce stress, based on medical advice.</td></tr>
-                        <tr><th><i class="fas fa-weight"></i> Body Condition</th><td>Regular monitoring of weight, hormone levels, and general health is essential. Pituitary tumors can sometimes cause weight gain, fatigue, or other hormonal changes.</td></tr>
-                        <tr><th><i class="fas fa-users"></i> Affected Age</th><td>Pituitary tumors can occur at any age but are more commonly diagnosed in adults between 30 and 60 years. Children can also be affected in rare cases.</td></tr>
-                        <tr><th><i class="fas fa-plus-circle"></i> Additional Info</th><td>Although most pituitary tumors are non-cancerous, they can cause serious symptoms by pressing on nearby brain structures or disrupting hormone production. Regular MRI scans and hormone tests are important for management.</td></tr>
-                    </table>
+                {% elif predict|lower == 'pituitary' %}
+                <table class="info-table">
+                    <tr>
+                        <th><i class="fas fa-info-circle"></i> Description</th>
+                        <td>Pituitary tumors are abnormal growths that develop in the pituitary gland, a small gland at
+                            the base of the brain that controls many body functions through hormone production. Most are
+                            benign but can affect hormone balance.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-exclamation-triangle"></i> Causes</th>
+                        <td>The exact cause is often unknown. Genetic mutations, hereditary conditions such as Multiple
+                            Endocrine Neoplasia type 1 (MEN1), or abnormal cell growth may contribute.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-shield-virus"></i> Prevention</th>
+                        <td>There is no guaranteed way to prevent pituitary tumors. Regular health check-ups, early
+                            detection of hormonal imbalances, and monitoring for genetic risk factors help in early
+                            diagnosis.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-hospital"></i> Treatment</th>
+                        <td>Treatment options may include surgery to remove the tumor, medications to regulate hormone
+                            levels, or radiation therapy. The treatment plan depends on the tumor's size, type, and
+                            impact.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-utensils"></i> Diet</th>
+                        <td>Maintain a nutrient-rich diet with plenty of vegetables, fruits, whole grains, and lean
+                            proteins. Reducing processed foods and excess sugar supports overall health.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-running"></i> Physical Activity</th>
+                        <td>Engage in moderate physical activities such as walking, yoga, or cycling. Exercise can
+                            improve overall health and reduce stress, based on medical advice.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-weight"></i> Body Condition</th>
+                        <td>Regular monitoring of weight, hormone levels, and general health is essential. Pituitary
+                            tumors can sometimes cause weight gain, fatigue, or other hormonal changes.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-users"></i> Affected Age</th>
+                        <td>Pituitary tumors can occur at any age but are more commonly diagnosed in adults between 30
+                            and 60 years. Children can also be affected in rare cases.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-plus-circle"></i> Additional Info</th>
+                        <td>Although most pituitary tumors are non-cancerous, they can cause serious symptoms by
+                            pressing on nearby brain structures or disrupting hormone production. Regular MRI scans and
+                            hormone tests are important for management.</td>
+                    </tr>
+                </table>
 
-                    {% elif predict|lower == 'no tumor' %}
-                    <table class="info-table">
-                        <tr><th><i class="fas fa-info-circle"></i> Description</th><td>No tumor detected. The brain tissue appears normal without abnormal growths or masses.</td></tr>
-                        <tr><th><i class="fas fa-exclamation-triangle"></i> Causes</th><td>Since no tumor is present, there are no direct causes. Maintaining good health helps reduce risks of future abnormalities.</td></tr>
-                        <tr><th><i class="fas fa-shield-virus"></i> Prevention</th><td>Continue regular medical check-ups, adopt a healthy lifestyle, and manage risk factors such as stress, obesity, or poor diet.</td></tr>
-                        <tr><th><i class="fas fa-hospital"></i> Treatment</th><td>No treatment is required as no tumor is detected. Preventive healthcare and healthy habits are recommended.</td></tr>
-                        <tr><th><i class="fas fa-utensils"></i> Diet</th><td>Maintain a balanced diet with plenty of fruits, vegetables, whole grains, and lean proteins. Avoid excessive processed foods and sugar.</td></tr>
-                        <tr><th><i class="fas fa-running"></i> Physical Activity</th><td>Engage in regular exercise such as walking, yoga, swimming, or cycling to promote brain and overall health.</td></tr>
-                        <tr><th><i class="fas fa-weight"></i> Body Condition</th><td>Maintain an ideal body weight and overall wellness through healthy lifestyle practices.</td></tr>
-                        <tr><th><i class="fas fa-users"></i> Affected Age</th><td>No tumor can occur at any age, but in this case, the individual has a healthy status with no abnormal growths.</td></tr>
-                        <tr><th><i class="fas fa-plus-circle"></i> Additional Info</th><td>No tumor presence is a positive outcome. Continued monitoring, routine screenings, and a healthy lifestyle support long-term wellness.</td></tr>
-                    </table>
-                    {% endif %}
+                {% elif predict|lower == 'no tumor' %}
+                <table class="info-table">
+                    <tr>
+                        <th><i class="fas fa-info-circle"></i> Description</th>
+                        <td>No tumor detected. The brain tissue appears normal without abnormal growths or masses.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-exclamation-triangle"></i> Causes</th>
+                        <td>Since no tumor is present, there are no direct causes. Maintaining good health helps reduce
+                            risks of future abnormalities.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-shield-virus"></i> Prevention</th>
+                        <td>Continue regular medical check-ups, adopt a healthy lifestyle, and manage risk factors such
+                            as stress, obesity, or poor diet.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-hospital"></i> Treatment</th>
+                        <td>No treatment is required as no tumor is detected. Preventive healthcare and healthy habits
+                            are recommended.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-utensils"></i> Diet</th>
+                        <td>Maintain a balanced diet with plenty of fruits, vegetables, whole grains, and lean proteins.
+                            Avoid excessive processed foods and sugar.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-running"></i> Physical Activity</th>
+                        <td>Engage in regular exercise such as walking, yoga, swimming, or cycling to promote brain and
+                            overall health.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-weight"></i> Body Condition</th>
+                        <td>Maintain an ideal body weight and overall wellness through healthy lifestyle practices.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-users"></i> Affected Age</th>
+                        <td>No tumor can occur at any age, but in this case, the individual has a healthy status with no
+                            abnormal growths.</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-plus-circle"></i> Additional Info</th>
+                        <td>No tumor presence is a positive outcome. Continued monitoring, routine screenings, and a
+                            healthy lifestyle support long-term wellness.</td>
+                    </tr>
+                </table>
+                {% endif %}
+
+                {% if obj %}
+                <div class="details-bottom-panel">
+                    <div class="details-bottom-info">
+                        <i class="fas fa-id-card"></i>
+                        <span>Scan Record <strong>#{{ obj.id }}</strong> · Identified {{ obj.created_at|date:"d M Y, h:i A" }}</span>
+                    </div>
+                    <div class="details-bottom-buttons">
+                        <a href="{% url 'database' %}" class="detail-btn detail-btn-back">
+                            <i class="fas fa-arrow-left"></i> Back to Database
+                        </a>
+                        <button type="button" class="detail-btn detail-btn-danger" onclick="confirmDeleteDetail('{% url 'delete_image' obj.id %}', '{{ obj.id }}', '{{ predict|escapejs }}');">
+                            <i class="fas fa-trash-alt"></i> Delete This Record
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
 
                 {% else %}
-                    <div style="text-align: center; padding: 2rem; color: var(--text-light);">
-                        <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
-                        <p>No data available for this prediction.</p>
-                    </div>
+                <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                    <i class="fas fa-exclamation-circle"
+                        style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                    <p>No data available for this prediction.</p>
+                </div>
                 {% endif %}
 
             </div><!-- /card-inner -->
         </div><!-- /card-glass -->
 
         <!-- ===== FOOTER NOTE ===== -->
-        <div style="margin-top: 2rem; text-align: center; font-size: 0.8rem; color: var(--text-light); padding: 1rem;">
+        <!-- <div style="margin-top: 2rem; text-align: center; font-size: 0.8rem; color: var(--text-light); padding: 1rem;">
             <i class="fas fa-brain" style="color: var(--primary-blue);"></i>
             Brain Tumor Segmentation System · Powered by Deep Learning &amp; U-Net
             <span style="display: inline-block; margin-left: 16px;">
                 <i class="fas fa-shield-alt"></i> HIPAA Compliant
             </span>
-        </div>
+        </div> -->
 
     </div><!-- /main-container -->
+{% endblock content %}
 
-</body>
-</html>
+{% block extra_js %}
+    <script>
+        function confirmDeleteDetail(actionUrl, id, label) {
+            const labelUpper = label ? label.toUpperCase() : 'SCAN';
+            window.openProductConfirmModal({
+                title: `Delete Scan #${id}?`,
+                message: `Are you sure you want to permanently delete this ${labelUpper} scan record? The MRI scan image and all segmentation data will be removed.`,
+                actionUrl: actionUrl,
+                confirmText: "Delete Record",
+                icon: "fas fa-trash-alt",
+                type: "danger"
+            });
+        }
+    </script>
+{% endblock extra_js %}

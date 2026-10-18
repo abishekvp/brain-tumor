@@ -21,16 +21,6 @@ for _pkg in ("punkt", "punkt_tab", "wordnet", "omw-1.4"):
 
 lemmatizer = WordNetLemmatizer()
 
-try:
-    from gtts import gTTS
-except ImportError:
-    gTTS = None
-
-try:
-    from pygame import mixer
-except ImportError:
-    mixer = None
-
 _CHATBOT_DIR = Path(__file__).resolve().parent
 _MODELS_CHATBOT_DIR = _CHATBOT_DIR.parent.parent / "models" / "chatbot"
 
@@ -43,24 +33,6 @@ with open(_MODELS_CHATBOT_DIR / "words.pkl", "rb") as _f:
     words = pickle.load(_f)
 with open(_MODELS_CHATBOT_DIR / "classes.pkl", "rb") as _f:
     classes = pickle.load(_f)
-
-
-
-# -----------------------------
-# Helper Functions
-# -----------------------------
-
-def safe_init_mixer():
-    """Initialize pygame mixer safely."""
-    if mixer is None:
-        return False
-    try:
-        if not mixer.get_init():
-            mixer.init()
-        return True
-    except Exception as e:
-        print(f"[WARNING] Audio init skipped: {e}")
-        return False
 
 
 def clean_up_sentence(sentence, source_lang='auto', target_lang='en'):
@@ -100,11 +72,7 @@ def predict_class(sentence, model):
     return return_list
 
 
-def getResponse(ints, intents_json, source_lang='en', target_lang='en',
-                save_path=None):
-    if save_path is None:
-        save_path = str(_CHATBOT_DIR / "response.mp3")
-
+def getResponse(ints, intents_json):
     if not ints:
         return "Sorry, I didn't understand that."
 
@@ -113,20 +81,7 @@ def getResponse(ints, intents_json, source_lang='en', target_lang='en',
 
     for i in list_of_intents:
         if i['tag'] == tag:
-            result = random.choice(i['responses'])
-
-            # Optional local TTS audio playback if gTTS and pygame are available
-            if gTTS is not None and mixer is not None:
-                try:
-                    tts = gTTS(text=result, lang='en')
-                    tts.save(save_path)
-                    if safe_init_mixer():
-                        sound = mixer.Sound(save_path)
-                        sound.play()
-                except Exception as e:
-                    print(f"[WARNING] Audio playback skipped: {e}")
-
-            return result
+            return random.choice(i['responses'])
 
     return "You must ask the right questions."
 

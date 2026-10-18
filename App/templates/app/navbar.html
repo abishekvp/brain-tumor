@@ -1,0 +1,176 @@
+<!-- ===== COMMON FIXED NAVBAR ===== -->
+<style>
+    .common-fixed-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 1000;
+        background: linear-gradient(135deg, #0a2a3f, #1a5276);
+        padding: 0.85rem 1.8rem;
+        box-shadow: 0 4px 20px rgba(10, 42, 63, 0.35);
+        border-bottom: 3px solid #1abc9c;
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    .common-fixed-navbar .nav-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .common-fixed-navbar .nav-brand {
+        color: #fff;
+        font-size: 1.55rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        text-decoration: none !important;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .common-fixed-navbar .nav-brand i {
+        color: #1abc9c;
+        font-size: 1.85rem;
+    }
+
+    .common-fixed-navbar .nav-brand .brand-main {
+        color: rgb(140, 250, 226);
+        font-weight: 700;
+    }
+
+    .common-fixed-navbar .nav-brand .brand-sub {
+        font-weight: 400;
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .common-fixed-navbar .nav-menu {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        flex-wrap: wrap;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .common-fixed-navbar .nav-menu li {
+        margin: 0;
+        padding: 0;
+    }
+
+    .common-fixed-navbar .nav-menu a {
+        color: rgba(255, 255, 255, 0.88);
+        text-decoration: none !important;
+        font-weight: 500;
+        padding: 0.45rem 1.1rem;
+        border-radius: 30px;
+        transition: all 0.25s ease;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .common-fixed-navbar .nav-menu a:hover,
+    .common-fixed-navbar .nav-menu a.active {
+        background: rgba(255, 255, 255, 0.16);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .common-fixed-navbar .nav-menu a i {
+        font-size: 0.9rem;
+        color: #7fd3ed;
+    }
+
+    .common-navbar-spacer {
+        height: 64px;
+        width: 100%;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #0a2a3f, #1a5276);
+    }
+
+    @media (max-width: 768px) {
+        .common-fixed-navbar {
+            padding: 0.65rem 1rem;
+        }
+        .common-fixed-navbar .nav-inner {
+            justify-content: center;
+        }
+        .common-fixed-navbar .nav-brand .brand-sub {
+            display: none;
+        }
+        .common-fixed-navbar .nav-menu {
+            justify-content: center;
+            gap: 0.4rem;
+        }
+        .common-fixed-navbar .nav-menu a {
+            padding: 0.35rem 0.85rem;
+            font-size: 0.85rem;
+        }
+        .common-navbar-spacer {
+            height: 98px;
+        }
+    }
+</style>
+
+<nav class="common-fixed-navbar">
+    <div class="nav-inner">
+        <a href="{% url 'users-home' %}" class="nav-brand">
+            <i class="fas fa-brain"></i>
+            <span class="brand-main">Qubit Brain</span>
+            <span class="brand-sub">Brain Tumor Segmentation System</span>
+        </a>
+        <ul class="nav-menu">
+            <li>
+                <a href="{% url 'users-home' %}" class="{% if request.path == '/' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'model' %}" class="{% if '/model' in request.path %}active{% endif %}">
+                    <i class="fas fa-robot"></i> Model
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'database' %}" class="{% if '/Database' in request.path or '/database' in request.path %}active{% endif %}">
+                    <i class="fas fa-database"></i> Database
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'users-profile' %}" class="{% if '/profile' in request.path %}active{% endif %}">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'logout_view' %}">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{% url 'login' %}" class="{% if '/login' in request.path %}active{% endif %}">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'users-register' %}" class="{% if '/register' in request.path %}active{% endif %}">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<div class="common-navbar-spacer"></div>
+
+{% include 'app/confirm_modal.html' %}

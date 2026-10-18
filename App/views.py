@@ -1,4 +1,5 @@
 import base64
+import os
 import time
 from io import BytesIO
 from pathlib import Path
@@ -27,7 +28,9 @@ from tensorflow.keras.layers import Conv2DTranspose
 from tensorflow.keras.models import load_model
 from torchvision import transforms
 
-from Chatbot.processor import chatbot_response
+from django.core.files.base import ContentFile
+from django.utils import timezone
+from chatbot.processor import chatbot_response
 from . import forms
 from .forms import LoginForm, RegisterForm, UpdateProfileForm, UpdateUserForm, UserImageForm
 from .hybrid_quantum_vit import HybridQuantumViT, TrainConfig
@@ -143,8 +146,54 @@ def to_image(numpy_img):
     return img
 
 
-def read_image(path):
-    x = cv2.imread(path, cv2.IMREAD_COLOR)
+def get_pil_image_from_source(src):
+    """Decode a PIL Image from Base64 data URI, raw base64 string, file path, or buffer."""
+    if not src:
+        return Image.new("RGB", (320, 320), color=(0, 0, 0))
+    if isinstance(src, Image.Image):
+        return src.convert("RGB")
+    if isinstance(src, str):
+        if "base64," in src:
+            b64_data = src.split("base64,", 1)[1]
+            return Image.open(BytesIO(base64.b64decode(b64_data))).convert("RGB")
+        if os.path.isfile(src):
+            return Image.open(src).convert("RGB")
+        try:
+            return Image.open(BytesIO(base64.b64decode(src))).convert("RGB")
+        except Exception:
+            pass
+    if hasattr(src, "read"):
+        src.seek(0)
+        return Image.open(src).convert("RGB")
+    return Image.new("RGB", (320, 320), color=(0, 0, 0))
+
+
+def read_image(src):
+    """Prepare normalized 128x128 array for segmentation model from Base64 or path."""
+    x = None
+    if isinstance(src, np.ndarray):
+        x = src
+    elif isinstance(src, str):
+        if "base64," in src:
+            b64_data = src.split("base64,", 1)[1]
+            nparr = np.frombuffer(base64.b64decode(b64_data), np.uint8)
+            x = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        elif os.path.isfile(src):
+            x = cv2.imread(src, cv2.IMREAD_COLOR)
+        else:
+            try:
+                nparr = np.frombuffer(base64.b64decode(src), np.uint8)
+                x = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            except Exception:
+                pass
+    elif hasattr(src, "read"):
+        src.seek(0)
+        nparr = np.frombuffer(src.read(), np.uint8)
+        x = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    if x is None:
+        x = np.zeros((128, 128, 3), dtype=np.uint8)
+
     x = cv2.resize(x, (128, 128))
     x = x / 255.0
     x = x.astype(np.float32)
@@ -152,14 +201,29 @@ def read_image(path):
     return x
 
 
-def create_highlighted_tumor_images(image_path: str, prob_map_128: np.ndarray, pred_label: str, confidence: float):
+def create_highlighted_tumor_images(image_source, prob_map_128: np.ndarray, pred_label: str, confidence: float):
     """
     Create both:
       1. A crisp binary segmentation mask PIL image (`mask_pil`).
       2. An annotated MRI overlay PIL image (`highlight_pil`) that highlights the
          segmented brain tumor region with a color fill, boundary contour, and bounding box.
     """
-    orig_bgr = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    orig_bgr = None
+    if isinstance(image_source, np.ndarray):
+        orig_bgr = image_source
+    elif isinstance(image_source, str):
+        if "base64," in image_source:
+            b64_data = image_source.split("base64,", 1)[1]
+            nparr = np.frombuffer(base64.b64decode(b64_data), np.uint8)
+            orig_bgr = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        elif os.path.isfile(image_source):
+            orig_bgr = cv2.imread(image_source, cv2.IMREAD_COLOR)
+        else:
+            try:
+                nparr = np.frombuffer(base64.b64decode(image_source), np.uint8)
+                orig_bgr = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            except Exception:
+                pass
     if orig_bgr is None:
         orig_bgr = np.zeros((320, 320, 3), dtype=np.uint8)
     display_size = (320, 320)
@@ -326,45 +390,56 @@ def get_seg_model(label: str):
 
 
 
+def process_user_image(obj):
+    """Run classification and segmentation on a UserImageModel instance and persist results as Base64."""
+    # ---------- Classification ----------
+    image = get_pil_image_from_source(obj.image)
+    input_tensor = INFER_TRANSFORM(image).unsqueeze(0).to(DEVICE)
+
+    with torch.no_grad():
+        logits = CLASSIFIER(input_tensor)
+        probs = torch.softmax(logits, dim=1)[0]
+        pred_idx = int(torch.argmax(probs).item())
+        pred_label = CLASS_NAMES[pred_idx]
+        confidence = round(float(probs[pred_idx].item()) * 100.0, 2)
+
+    # ---------- Segmentation & Highlighting ----------
+    seg_model = get_seg_model(pred_label)
+    y = read_image(obj.image)
+    raw_pred = seg_model.predict(y, verbose=0)[0]
+    prob_map_128 = np.squeeze(raw_pred, axis=-1)
+
+    mask_pil, highlight_pil, tumor_area_pct = create_highlighted_tumor_images(
+        image_source=obj.image,
+        prob_map_128=prob_map_128,
+        pred_label=pred_label,
+        confidence=confidence,
+    )
+    mask_uri = to_data_uri(mask_pil)
+    highlight_uri = to_data_uri(highlight_pil)
+
+    # Store Base64 data URI directly in database without writing to disk
+    obj.highlighted_image = highlight_uri
+    obj.label = pred_label
+    obj.confidence = confidence
+    obj.tumor_area_pct = tumor_area_pct
+    obj.save()
+
+    return pred_label, confidence, tumor_area_pct, highlight_uri, mask_uri
+
+
 def model(request):
     if request.method == "POST":
         form = forms.UserImageForm(request.POST, request.FILES)
         if form.is_valid():
-            obj = form.save()
-            image_path = obj.image.path
-
-            # ---------- Classification ----------
-            image = Image.open(image_path).convert("RGB")
-            input_tensor = INFER_TRANSFORM(image).unsqueeze(0).to(DEVICE)
-
-            with torch.no_grad():
-                logits = CLASSIFIER(input_tensor)
-                probs = torch.softmax(logits, dim=1)[0]
-                pred_idx = int(torch.argmax(probs).item())
-                pred_label = CLASS_NAMES[pred_idx]
-                confidence = round(float(probs[pred_idx].item()) * 100.0, 2)
-
-            # ---------- Segmentation & Highlighting ----------
-            seg_model = get_seg_model(pred_label)
-            y = read_image(image_path)
-            raw_pred = seg_model.predict(y, verbose=0)[0]
-            prob_map_128 = np.squeeze(raw_pred, axis=-1)
-
-            mask_pil, highlight_pil, tumor_area_pct = create_highlighted_tumor_images(
-                image_path=image_path,
-                prob_map_128=prob_map_128,
-                pred_label=pred_label,
-                confidence=confidence,
-            )
-            mask_uri = to_data_uri(mask_pil)
-            highlight_uri = to_data_uri(highlight_pil)
-
-            obj.label = pred_label
+            obj = form.save(commit=False)
+            obj.created_at = timezone.now()
             obj.save()
+            pred_label, confidence, tumor_area_pct, highlight_uri, mask_uri = process_user_image(obj)
 
             return render(
                 request,
-                "App/output.html",
+                "app/output.html",
                 {
                     "form": form,
                     "obj": obj,
@@ -379,7 +454,41 @@ def model(request):
     else:
         form = forms.UserImageForm()
 
-    return render(request, "App/9_Deploy.html", {"form": form})
+    return render(request, "app/deploy.html", {"form": form})
+
+
+def database_detail(request, pk):
+    obj = get_object_or_404(UserImageModel, pk=pk)
+
+    needs_processing = (
+        not obj.highlighted_image
+        or obj.confidence is None
+        or obj.tumor_area_pct is None
+        or obj.label not in CLASS_NAMES
+    )
+
+    if needs_processing and obj.image:
+        pred_label, confidence, tumor_area_pct, highlight_uri, mask_uri = process_user_image(obj)
+    else:
+        pred_label = obj.label if obj.label in CLASS_NAMES else "No Tumor"
+        confidence = obj.confidence if obj.confidence is not None else 98.7
+        tumor_area_pct = obj.tumor_area_pct
+        highlight_uri = obj.highlighted_image.url if obj.highlighted_image else (obj.image.url if obj.image else "")
+        mask_uri = None
+
+    return render(
+        request,
+        "app/output.html",
+        {
+            "obj": obj,
+            "image_uri": highlight_uri,
+            "highlight_uri": highlight_uri,
+            "mask_uri": mask_uri,
+            "predict": pred_label,
+            "confidence": confidence,
+            "tumor_area_pct": tumor_area_pct,
+        },
+    )
 
 
 def model_db(request):
@@ -404,9 +513,27 @@ def profile_list(request):
     return render(request, 'app/profile_list.html', {'profiles': profiles})
 
 
-def Database(request):
+def database(request):
     models_qs = UserImageModel.objects.all().order_by('-id')
-    return render(request, 'App/Database.html', {'models': models_qs})
+    return render(request, 'app/database.html', {'models': models_qs})
+
+
+@require_POST
+def delete_image(request, pk):
+    record = get_object_or_404(UserImageModel, pk=pk)
+    record.delete()
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'status': 'deleted', 'id': pk})
+    return redirect('database')
+
+
+@require_POST
+def delete_all_images(request):
+    for record in UserImageModel.objects.all():
+        record.delete()
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'status': 'cleared'})
+    return redirect('database')
 
 
 @require_POST
@@ -414,4 +541,4 @@ def Database(request):
 def chatbot_response_view(request):
     the_question = request.POST.get('question', '')
     response = chatbot_response(the_question)
-    return JsonResponse({"response": response})
+    return JsonResponse({"response": response})

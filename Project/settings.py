@@ -41,6 +41,7 @@ DEBUG = env("DEBUG")
 ALLOWED_HOSTS = ["*"]
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
 
 # Application definition
 
@@ -51,8 +52,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'App',
-    'Chatbot',
+    'app',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "Project.urls"
+ROOT_URLCONF = "project.urls"
 
 TEMPLATES = [
     {
@@ -83,7 +84,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "Project.wsgi.application"
+WSGI_APPLICATION = "project.wsgi.application"
 
 
 # Database
@@ -121,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Kolkata"
 
 USE_I18N = True
 
@@ -137,7 +138,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

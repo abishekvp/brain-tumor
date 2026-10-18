@@ -20,7 +20,7 @@ from django.urls import path
 from .views import home,index, RegisterView,logout_view
 from .import views
 
-from Chatbot.views import chatbot_response_view
+from chatbot.views import chatbot_response_view
 
 urlpatterns = [
     path('', home, name='users-home'),
@@ -28,7 +28,10 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='users-register'),
     path('profile1/', views.profile, name='users-profile'),
     path('model/', views.model, name='model'),
-    path('Database/', views.Database, name='Database'),
+    path('database/', views.database, name='database'),
+    path('database/<int:pk>/', views.database_detail, name='database_detail'),
+    path('database/delete/<int:pk>/', views.delete_image, name='delete_image'),
+    path('database/delete-all/', views.delete_all_images, name='delete_all_images'),
     path('logout_view/', logout_view, name='logout_view'),
     path('chatbot/', chatbot_response_view, name='chatbot'),
 ]

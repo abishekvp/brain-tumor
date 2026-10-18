@@ -30,4 +30,7 @@ gTTS
 deep-translator
 googletrans-py==4.0.0
 pyttsx3
-pygame
+pygame
+
+
+django-environ==0.14.0

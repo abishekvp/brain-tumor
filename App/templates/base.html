@@ -1,0 +1,384 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjs0ry9Z2lOOVtjopBoTk80jBRbeWCHyyahQ&s" type="image/x-icon">
+    
+    <title>{% block title %}Qubit Brain · AI Brain Tumor Segmentation System{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Product-Wide Common Styles -->
+    <style>
+        :root {
+            --primary-dark: #0a2a3f;
+            --primary-mid: #1a5276;
+            --primary-blue: #2e86c1;
+            --primary-light: #5dade2;
+            --accent-teal: #1abc9c;
+            --accent-cyan: #8cfae2;
+            --accent-gold: #f39c12;
+            --accent-red: #e74c3c;
+            --accent-green: #27ae60;
+            --bg-light: #f0f5fa;
+            --bg-card: #ffffff;
+            --text-dark: #0a1e2b;
+            --text-mid: #2c4a62;
+            --text-light: #6b8fa8;
+            --border-light: #dce6ef;
+            --shadow-sm: 0 4px 20px rgba(10, 42, 63, 0.08);
+            --shadow-md: 0 12px 40px rgba(10, 42, 63, 0.15);
+            --shadow-lg: 0 20px 60px rgba(10, 42, 63, 0.20);
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            cursor: default;
+            overflow-x: hidden;
+        }
+
+        /* Unified Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #eaf1f8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9bbcd4;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1a5276;
+        }
+
+        /* Cursor & Selectability */
+        p, h1, h2, h3, h4, h5, h6, span, label, input, textarea, td, th {
+            cursor: text;
+        }
+        a, button, [role="button"], input[type="submit"], input[type="button"], .btn {
+            cursor: pointer !important;
+        }
+
+        /* Common Django Messages Toast Overlay */
+        .product-messages-container {
+            position: fixed;
+            top: 86px;
+            right: 24px;
+            z-index: 99999;
+            width: min(440px, calc(100vw - 32px));
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .product-messages-container {
+                top: 116px;
+                right: 16px;
+                left: 16px;
+                width: auto;
+            }
+        }
+
+        .product-alert {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 1rem 1.25rem 1.15rem 1.25rem;
+            margin: 0;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 10px 30px rgba(10, 42, 63, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 0.95rem;
+            font-weight: 500;
+            pointer-events: auto;
+            backdrop-filter: blur(8px);
+            animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease;
+            max-height: 160px;
+        }
+
+        .product-alert.hiding {
+            opacity: 0;
+            transform: translateX(50px) scale(0.92);
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            border-width: 0;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .product-alert .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .product-alert .alert-content i {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .product-alert-success {
+            background: #eafaf1;
+            color: #145a32;
+            border: 1px solid #a9dfbf;
+            border-left: 5px solid #27ae60;
+        }
+        .product-alert-success .alert-content i {
+            color: #27ae60;
+        }
+
+        .product-alert-danger, .product-alert-error {
+            background: #fdedec;
+            color: #78281f;
+            border: 1px solid #f5b7b1;
+            border-left: 5px solid #e74c3c;
+        }
+        .product-alert-danger .alert-content i, .product-alert-error .alert-content i {
+            color: #e74c3c;
+        }
+
+        .product-alert-warning {
+            background: #fef9e7;
+            color: #7d6608;
+            border: 1px solid #f9e79f;
+            border-left: 5px solid #f39c12;
+        }
+        .product-alert-warning .alert-content i {
+            color: #f39c12;
+        }
+
+        .product-alert-info {
+            background: #ebf5fb;
+            color: #1b4f72;
+            border: 1px solid #aed6f1;
+            border-left: 5px solid #2980b9;
+        }
+        .product-alert-info .alert-content i {
+            color: #2980b9;
+        }
+
+        .product-alert .alert-close {
+            background: transparent;
+            border: none;
+            font-size: 1.35rem;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.65;
+            padding: 0 4px;
+            line-height: 1;
+            transition: opacity 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .product-alert .alert-close:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        /* 5-second countdown progress bar */
+        .product-alert-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background: currentColor;
+            opacity: 0.35;
+            transform-origin: left center;
+            animation: alertCountdown 5s linear forwards;
+        }
+
+        @keyframes alertCountdown {
+            from {
+                transform: scaleX(1);
+            }
+            to {
+                transform: scaleX(0);
+            }
+        }
+
+        /* Product Common Buttons */
+        .btn-product-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #1a5276, #2e86c1);
+            color: #ffffff !important;
+            padding: 0.65rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none !important;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(46, 134, 193, 0.3);
+        }
+
+        .btn-product-primary:hover {
+            background: linear-gradient(135deg, #2e86c1, #1a5276);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(46, 134, 193, 0.45);
+        }
+
+        .btn-product-teal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+            color: #ffffff !important;
+            padding: 0.65rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none !important;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(26, 188, 156, 0.3);
+        }
+
+        .btn-product-teal:hover {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(26, 188, 156, 0.45);
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Common Navbar Product-Wide -->
+    {% block navbar %}
+        {% include 'app/navbar.html' %}
+    {% endblock navbar %}
+
+    <!-- Flash Messages (Overlay Toast) -->
+    {% if messages %}
+    <div class="product-messages-container" id="productMessagesContainer" aria-live="polite">
+        {% for message in messages %}
+        <div class="product-alert product-alert-{{ message.tags|default:'info' }}" role="alert">
+            <div class="alert-content">
+                <i class="fas {% if 'success' in message.tags %}fa-check-circle{% elif 'danger' in message.tags or 'error' in message.tags %}fa-exclamation-circle{% elif 'warning' in message.tags %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                <span>{{ message }}</span>
+            </div>
+            <button type="button" class="alert-close" aria-label="Close" onclick="dismissProductAlert(this)">&times;</button>
+            <div class="product-alert-progress"></div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Page Content -->
+    {% block content %}{% endblock content %}
+
+    <!-- Chatbot Widget -->
+    {% include 'chatbot/widget.html' %}
+
+    {% block modals %}{% endblock modals %}
+
+    <!-- Common Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <!-- Auto-dismiss Flash Messages Script -->
+    <script>
+        function dismissProductAlert(buttonOrElement) {
+            const alertEl = (buttonOrElement.classList && buttonOrElement.classList.contains('product-alert'))
+                ? buttonOrElement
+                : buttonOrElement.closest('.product-alert');
+            if (!alertEl || alertEl.classList.contains('hiding')) return;
+            
+            alertEl.classList.add('hiding');
+            setTimeout(function() {
+                alertEl.remove();
+                const container = document.getElementById('productMessagesContainer');
+                if (container && container.children.length === 0) {
+                    container.remove();
+                }
+            }, 400);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const alerts = document.querySelectorAll('.product-alert');
+            alerts.forEach(function (alert) {
+                let timeoutId = setTimeout(function () {
+                    dismissProductAlert(alert);
+                }, 5000);
+
+                // Pause countdown when mouse hovers over alert
+                alert.addEventListener('mouseenter', function () {
+                    clearTimeout(timeoutId);
+                    const progressBar = alert.querySelector('.product-alert-progress');
+                    if (progressBar) progressBar.style.animationPlayState = 'paused';
+                });
+
+                // Resume auto-hide after hover ends
+                alert.addEventListener('mouseleave', function () {
+                    const progressBar = alert.querySelector('.product-alert-progress');
+                    if (progressBar) progressBar.style.animationPlayState = 'running';
+                    timeoutId = setTimeout(function () {
+                        dismissProductAlert(alert);
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

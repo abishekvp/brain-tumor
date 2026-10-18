@@ -1,40 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - Brain Tumor Segmentation</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register · Brain Tumor Segmentation{% endblock %}
+
+{% block extra_css %}
   <style>
-    * {
-      padding: 0;
-      margin: 0;
-      color: #1a1f36;
-      box-sizing: border-box;
-      word-wrap: break-word;
+    .login-root {
+      background: #1a1f36;
+      display: flex;
+      width: 100%;
+      min-height: calc(100vh - 74px);
+      overflow: hidden;
+      position: relative;
       font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Ubuntu, sans-serif;
     }
-    body {
-      min-height: 100%;
-      background-color: #1a1f36;
+    .login-root * {
+      box-sizing: border-box;
+      word-wrap: break-word;
     }
-    h1 {
+    .login-root h1 {
       letter-spacing: -1px;
     }
-    a {
+    .login-root a {
       color: #6d94aa;
       text-decoration: unset;
     }
 
     /* ---- Video Background ---- */
-    .login-root {
-      background: #1a1f36;
-      display: flex;
-      width: 100%;
-      min-height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
     .login-video-bg {
       position: fixed;
       top: 0;
@@ -329,8 +321,9 @@
       }
     }
   </style>
-</head>
-<body>
+{% endblock extra_css %}
+
+{% block content %}
 
   <div class="login-root">
 
@@ -434,7 +427,9 @@
     </div>
 
   </div>
+{% endblock content %}
 
+{% block extra_js %}
   <script>
     // Ensure video plays and handles errors
     document.addEventListener('DOMContentLoaded', function() {
@@ -494,6 +489,4 @@
       }
     }
   </script>
-
-</body>
-</html>
+{% endblock extra_js %}

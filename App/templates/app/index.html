@@ -1,22 +1,23 @@
-{% include 'chatbot/widget.html' %}
-{% extends 'users/base.html' %}
+{% extends 'base.html' %}
+
+{% block title %}Dashboard · Brain Tumor Segmentation{% endblock %}
+
 {% block content %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<style>
-    
-</style>
-<body>
-    
-</body>
-</html>
-
-
+<div class="product-dashboard-container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem;">
+    <div style="background: #fff; border-radius: var(--radius-md); padding: 2.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); text-align: center;">
+        <i class="fas fa-brain" style="font-size: 3rem; color: var(--accent-teal); margin-bottom: 1rem; display: inline-block;"></i>
+        <h2 style="color: var(--primary-dark); font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Brain Tumor Segmentation Dashboard</h2>
+        <p style="color: var(--text-mid); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">
+            Access automated deep learning MRI scan segmentation, browse historical records, and manage your analysis.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'model' %}" class="btn-product-primary">
+                <i class="fas fa-robot"></i> Run Model Analysis
+            </a>
+            <a href="{% url 'database' %}" class="btn-product-teal">
+                <i class="fas fa-database"></i> View Database
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock content %}
-

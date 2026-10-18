@@ -80,20 +80,66 @@ class UpdateUserForm(forms.ModelForm):
         fields = ['username', 'email']
 
 
+import base64
+from io import BytesIO
+from PIL import Image
+from .models import DEFAULT_AVATAR_BASE64, Profile, UserImageModel, get_default_avatar
+
+
 class UpdateProfileForm(forms.ModelForm):
-    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
-    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    avatar = forms.FileField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control-file', 'id': 'id_avatar', 'accept': 'image/*'})
+    )
+    bio = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5})
+    )
 
     class Meta:
         model = Profile
         fields = ['avatar', 'bio']
 
+    def clean_avatar(self):
+        uploaded = self.cleaned_data.get('avatar')
+        if uploaded and hasattr(uploaded, 'read'):
+            try:
+                img = Image.open(uploaded)
+                img.thumbnail((256, 256))
+                buf = BytesIO()
+                fmt = "PNG" if img.mode == "RGBA" else "JPEG"
+                mime = "image/png" if fmt == "PNG" else "image/jpeg"
+                img.save(buf, format=fmt, quality=90)
+                b64_str = base64.b64encode(buf.getvalue()).decode('utf-8')
+                return f"data:{mime};base64,{b64_str}"
+            except Exception:
+                pass
+        # Retain existing avatar if no new file uploaded
+        if self.instance and self.instance.avatar:
+            return self.instance.avatar
+        return get_default_avatar()
 
-from . models import UserImageModel
+
 class UserImageForm(forms.ModelForm):
+    image = forms.FileField(
+        required=True,
+        widget=forms.FileInput(attrs={'id': 'fileInput', 'accept': 'image/*'})
+    )
 
     class Meta:
         model = UserImageModel
         fields = ['image']
+
+    def clean_image(self):
+        uploaded = self.cleaned_data.get('image')
+        if uploaded and hasattr(uploaded, 'read'):
+            file_bytes = uploaded.read()
+            mime_type = getattr(uploaded, 'content_type', None) or 'image/jpeg'
+            b64_str = base64.b64encode(file_bytes).decode('utf-8')
+            return f"data:{mime_type};base64,{b64_str}"
+        elif isinstance(uploaded, str):
+            return uploaded
+        return uploaded
+
 
 

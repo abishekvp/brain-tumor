@@ -22,14 +22,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from django.contrib.auth import views as auth_views
-from App.views import CustomLoginView, ChangePasswordView
+from app.views import CustomLoginView, ChangePasswordView
 
-from App.forms import LoginForm
+from app.forms import LoginForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('App.urls')),
-    # path('accounts/', include('App.urls')),
+    path('',include('app.urls')),
+    # path('accounts/', include('app.urls')),
     path('login/', CustomLoginView.as_view(redirect_authenticated_user=True, template_name='users/login.html',
                                            authentication_form=LoginForm), name='login'),
 
@@ -47,7 +47,7 @@ urlpatterns = [
 
     path('password-change/', ChangePasswordView.as_view(), name='password_change'),
     
-    path('chatbot/', include('Chatbot.urls')),
+    path('chatbot/', include('chatbot.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

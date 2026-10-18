@@ -1,27 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Brain Tumor Segmentation</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login · Brain Tumor Segmentation{% endblock %}
+
+{% block extra_css %}
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Open Sans", sans-serif;
-    }
-
-    body {
+    .login-page-wrapper {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      min-height: calc(100vh - 74px);
       width: 100%;
-      padding: 0 10px;
+      padding: 30px 10px;
       position: relative;
       overflow: hidden;
     }
@@ -260,8 +250,10 @@
       }
     }
   </style>
-</head>
-<body>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="login-page-wrapper">
 
   <!-- Video Background -->
   <div class="video-bg">
@@ -307,7 +299,10 @@
       </div>
     </form>
   </div>
+</div>
+{% endblock content %}
 
+{% block extra_js %}
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var video = document.getElementById('bgVideo');
@@ -357,6 +352,4 @@
       }
     }
   </script>
-
-</body>
-</html>
+{% endblock extra_js %}
