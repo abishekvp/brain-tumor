@@ -229,11 +229,7 @@ Run [`train_hybrid_quantum_vit.py`](../quantum%20vit%20model/Classifications/tra
 ```powershell
 cd "c:\Users\AbishekV\Documents\brain-tumor\quantum vit model\Classifications"
 
-..\..\django\env\Scripts\python.exe train_hybrid_quantum_vit.py `
-    --data-dir ./DATASET `
-    --epochs 75 `
-    --batch-size 32 `
-    --lr 0.0003
+python train_hybrid_quantum_vit.py --data-dir ./DATASET --epochs 75 --batch-size 32 --lr 0.0003
 ```
 
 - **GPU & Mixed Precision**: Automatically detects NVIDIA CUDA GPUs and enables `torch.cuda.amp.autocast` mixed precision. Falls back to CPU if no GPU is found.
@@ -267,16 +263,16 @@ Navigate to the `Segmentations` directory:
 cd "c:\Users\AbishekV\Documents\brain-tumor\quantum vit model\Segmentations"
 
 # 1. Train Glioma U-Net -> saves to ../../models/segmentation/Glioma.h5
-..\..\django\env\Scripts\python.exe train_unet_segmentation.py --category Glioma --epochs 50 --batch-size 8
+python train_unet_segmentation.py --category Glioma --epochs 50 --batch-size 8
 
 # 2. Train Meningioma U-Net -> saves to ../../models/segmentation/Meningioma.h5
-..\..\django\env\Scripts\python.exe train_unet_segmentation.py --category Meningioma --epochs 50 --batch-size 8
+python train_unet_segmentation.py --category Meningioma --epochs 50 --batch-size 8
 
 # 3. Train Pituitary U-Net -> saves to ../../models/segmentation/pituitory.h5
-..\..\django\env\Scripts\python.exe train_unet_segmentation.py --category Pituitary --epochs 50 --batch-size 8
+python train_unet_segmentation.py --category Pituitary --epochs 50 --batch-size 8
 
 # 4. Train No Tumor U-Net -> saves to ../../models/segmentation/No Tumor.h5
-..\..\django\env\Scripts\python.exe train_unet_segmentation.py --category "No Tumor" --epochs 50 --batch-size 8
+python train_unet_segmentation.py --category "No Tumor" --epochs 50 --batch-size 8
 ```
 
 #### Training Callbacks:
@@ -293,7 +289,7 @@ Whenever you add new medical Q&A pairs, symptoms, or intent tags to [`django/cha
 ```powershell
 cd "c:\Users\AbishekV\Documents\brain-tumor\django\chatbot"
 
-..\env\Scripts\python.exe train_chatbot.py
+python train_chatbot.py
 ```
 
 This tokenizes patterns using NLTK WordNet lemmatization, trains the Keras neural network, and updates:
