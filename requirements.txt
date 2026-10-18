@@ -1,0 +1,33 @@
+# Core Web Framework
+Django>=4.2,<5.1
+python-dotenv
+requests
+Pillow
+
+# Deep Learning & Quantum Machine Learning (Classification: Hybrid Quantum-Classical ViT)
+torch>=2.1.0
+torchvision>=0.16.0
+pennylane==0.35.1
+pennylane-lightning==0.35.1
+autoray==0.6.12
+
+
+# Deep Learning (Segmentation: U-Net & Chatbot Intent Classifier)
+tensorflow>=2.15.0
+
+# Image Processing & Scientific Computing
+numpy>=1.24.0,<2.0.0
+scipy
+scikit-learn
+pandas
+matplotlib
+opencv-python-headless
+joblib
+
+# AI Chatbot, NLP & Speech/Translation
+nltk
+gTTS
+deep-translator
+googletrans-py==4.0.0
+pyttsx3
+pygame

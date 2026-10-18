@@ -1,0 +1,448 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["Hi", "Hello", "Hey", "Hi there", "Good morning", "Good afternoon", "Good evening", "Hey there", "Greetings", "What's up", "How are you", "Hello bot", "Hi assistant"],
+      "responses": [
+        "Hello! I'm specialized in brain tumors and brain tumor segmentation. What would you like to explore today?",
+        "Hi there! Ask me anything about brain tumors, their diagnosis, treatment, or how AI segments them on MRI.",
+        "Hey! Ready to talk about gliomas, meningiomas, or deep-learning segmentation? What's on your mind?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["Bye", "Goodbye", "See you", "Talk to you later", "I have to go", "That's all", "Exit", "Quit", "End chat", "Bye bye"],
+      "responses": [
+        "Take care. Remember this is general information only — always consult qualified doctors for personal medical advice.",
+        "Goodbye! Feel free to return anytime you have more questions about brain tumors or segmentation.",
+        "See you later. Stay informed and take care of yourself."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "thanks",
+      "patterns": ["Thank you", "Thanks", "Thanks a lot", "Thank you so much", "Appreciate it", "That was helpful", "Thanks for the info", "Grateful"],
+      "responses": [
+        "You're welcome! Anything else about brain tumors or segmentation you'd like to know?",
+        "Glad it helped. Feel free to ask follow-up questions anytime.",
+        "My pleasure. Want to go deeper on any specific topic?"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "identity",
+      "patterns": ["Who are you", "What are you", "What can you do", "Tell me about yourself", "Are you a doctor", "What is your purpose", "Are you a medical chatbot"],
+      "responses": [
+        "I'm an AI assistant focused exclusively on brain tumors and brain tumor segmentation. I explain concepts, types, symptoms, diagnosis, treatment options, and how deep learning is used to segment tumors in MRI. I am not a doctor and this is never medical advice.",
+        "I'm a specialized knowledge chatbot for brain oncology and medical image segmentation. Ask me clinical or technical questions in this domain."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "what_is_brain_tumor",
+      "patterns": ["What is a brain tumor", "Define brain tumor", "Explain brain tumor", "What are brain tumors", "Tell me about brain tumors", "What does a brain tumor mean", "Brain tumor definition"],
+      "responses": [
+        "A brain tumor is an abnormal mass of cells growing in the brain or central nervous system. They can be primary (starting in the brain) or secondary/metastatic (spreading from elsewhere). They are also classified as benign or malignant. Location, size, and growth rate determine how they affect brain function. Would you like types, symptoms, or segmentation next?",
+        "Brain tumors are uncontrolled cell growths inside the skull. Even benign ones can be dangerous because of the limited space. I can also explain how we segment them on MRI if you're interested."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "primary_vs_secondary",
+      "patterns": ["Primary vs secondary brain tumor", "Difference between primary and metastatic brain tumor", "What is a metastatic brain tumor", "Primary brain tumor meaning", "Secondary brain cancer"],
+      "responses": [
+        "Primary brain tumors originate in the brain itself (gliomas, meningiomas, etc.). Secondary (metastatic) brain tumors start in another organ (lung, breast, melanoma, etc.) and spread to the brain. Metastases are actually more common than primary malignant brain tumors in adults. Treatment approaches differ significantly.",
+        "Primary = starts in brain. Secondary/metastatic = spreads to brain from elsewhere. Molecular and imaging features also help distinguish them."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "benign_vs_malignant",
+      "patterns": ["Benign vs malignant brain tumor", "Difference between benign and malignant", "Are all brain tumors cancer", "Can benign brain tumors be dangerous", "Malignant brain tumor meaning"],
+      "responses": [
+        "Benign tumors grow slowly, have clear borders, and do not invade surrounding tissue or spread. Malignant tumors grow faster, invade brain tissue, and can be life-threatening. However, even benign tumors can cause serious problems due to pressure inside the skull. Location often matters more than the benign/malignant label alone.",
+        "Not all brain tumors are cancer. Benign ones are non-cancerous but still require careful management. Malignant ones are cancers of the brain."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "types_overview",
+      "patterns": ["Types of brain tumors", "What are the different types of brain tumors", "Classify brain tumors", "Common brain tumors", "List of brain tumor types", "Brain tumor classification"],
+      "responses": [
+        "Major categories include: Gliomas (astrocytoma, oligodendroglioma, glioblastoma), Meningiomas, Pituitary adenomas, Schwannomas, Medulloblastomas (more common in children), and Metastatic tumors. They are further graded by the WHO system (I–IV). Want details on any specific type?",
+        "The most frequent adult primary tumors are meningiomas (usually benign) and gliomas (ranging from low-grade to glioblastoma). I can break down any of these further."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "glioma",
+      "patterns": ["What is a glioma", "Explain glioma", "Types of glioma", "Glioma brain tumor", "Astrocytoma oligodendroglioma"],
+      "responses": [
+        "Gliomas arise from glial cells (astrocytes, oligodendrocytes, or ependymal cells). They include astrocytomas, oligodendrogliomas, and ependymomas. They are graded I–IV. Glioblastoma is the highest-grade (IV) and most aggressive glioma. Molecular markers such as IDH mutation and 1p/19q codeletion are critical for modern classification.",
+        "Gliomas are the most common malignant primary brain tumors in adults. Their behavior and treatment depend heavily on grade and molecular profile."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "glioblastoma",
+      "patterns": ["What is glioblastoma", "GBM", "Glioblastoma multiforme", "Explain glioblastoma", "How aggressive is glioblastoma", "Glioblastoma symptoms treatment"],
+      "responses": [
+        "Glioblastoma (GBM) is a WHO grade IV astrocytoma and the most aggressive common primary brain tumor in adults. It grows rapidly, invades surrounding brain tissue, and has a challenging prognosis even with maximal treatment (surgery + radiation + temozolomide). Molecular features like MGMT methylation status influence treatment response. This is general information only.",
+        "GBM is characterized by necrosis, microvascular proliferation, and aggressive infiltration. Standard of care is the Stupp protocol. Clinical trials are very important in this disease."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "meningioma",
+      "patterns": ["What is meningioma", "Explain meningioma", "Meningioma brain tumor", "Are meningiomas cancerous", "Meningioma treatment"],
+      "responses": [
+        "Meningiomas arise from the meninges (the membranes covering the brain and spinal cord). Most are WHO grade I (benign) and grow slowly. Grade II (atypical) and grade III (anaplastic) are less common and more aggressive. Many small asymptomatic meningiomas can be observed; larger or symptomatic ones are often surgically removed.",
+        "Meningiomas are the most common primary brain tumor overall. The majority are benign, but location (e.g., near critical structures) can still make them challenging."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "pituitary_tumor",
+      "patterns": ["Pituitary tumor", "Pituitary adenoma", "What is a pituitary tumor", "Hormonal brain tumor", "Pituitary adenoma symptoms"],
+      "responses": [
+        "Pituitary adenomas are usually benign tumors of the pituitary gland. They can be hormone-secreting (functional) or non-secreting. Symptoms may include hormonal imbalances, visual field defects (from pressure on the optic chiasm), and headaches. Treatment options include surgery (often transsphenoidal), medication, and radiation.",
+        "Most pituitary tumors are not cancers. Management depends on size, hormone activity, and effect on vision."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "metastatic_brain_tumor",
+      "patterns": ["Metastatic brain tumor", "Brain metastases", "Cancer that spreads to brain", "Secondary brain tumor treatment"],
+      "responses": [
+        "Brain metastases are tumors that have spread to the brain from another primary cancer (most commonly lung, breast, melanoma, kidney, or colorectal). They are more common than primary malignant brain tumors. Treatment may include surgery, stereotactic radiosurgery, whole-brain radiation, systemic therapy, or combinations, depending on number, size, and primary cancer type.",
+        "Management of brain metastases has improved significantly with better systemic therapies and precise radiation techniques."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "who_grading",
+      "patterns": ["WHO grading brain tumors", "Brain tumor grades", "What is grade 4 brain tumor", "Grade 1 vs grade 4", "Tumor grading system"],
+      "responses": [
+        "The WHO classification grades brain tumors from I to IV based on how abnormal the cells look and how quickly they are likely to grow. Grade I = least aggressive (often cured by surgery alone). Grade IV = most aggressive (e.g., glioblastoma). Molecular features are now integrated into the classification (WHO 2021).",
+        "Higher grade generally means faster growth and worse prognosis, but molecular markers can significantly modify the expected behavior."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "molecular_markers",
+      "patterns": ["Molecular markers brain tumor", "IDH mutation", "MGMT methylation", "1p 19q codeletion", "Molecular classification glioma", "Important genetic markers"],
+      "responses": [
+        "Key molecular markers in gliomas include: IDH1/IDH2 mutation (better prognosis), 1p/19q codeletion (defines oligodendroglioma, better response to therapy), MGMT promoter methylation (predicts better response to temozolomide), TERT promoter mutation, EGFR amplification, and others. These markers are now essential for accurate diagnosis and treatment decisions.",
+        "Modern brain tumor diagnosis is integrated: histology + molecular profile. This has replaced older purely microscopic classification for many tumors."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "symptoms_general",
+      "patterns": ["Symptoms of brain tumor", "Signs of brain tumor", "Brain tumor warning signs", "Common symptoms", "How do brain tumors present"],
+      "responses": [
+        "General symptoms include persistent or worsening headaches, seizures, nausea/vomiting, cognitive or personality changes, weakness or numbness, speech difficulties, vision or hearing changes, and balance problems. Symptoms depend strongly on tumor location and size. Many of these symptoms have far more common causes — see a doctor for proper evaluation.",
+        "Raised intracranial pressure symptoms (headache, nausea, papilledema) and focal neurological deficits are classic, but presentation is highly variable."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "symptoms_by_location",
+      "patterns": ["Symptoms based on tumor location", "Frontal lobe tumor symptoms", "Temporal lobe tumor", "Occipital parietal tumor symptoms", "Brainstem tumor symptoms"],
+      "responses": [
+        "Location strongly influences symptoms: Frontal lobe — personality, executive function, motor weakness. Temporal lobe — seizures, memory, language. Parietal — sensory changes, spatial awareness. Occipital — visual field defects. Cerebellum — balance, coordination. Brainstem — cranial nerve deficits, vital function issues. This is why imaging localization is so important.",
+        "A tumor in an 'eloquent' area (language, motor, vision) produces earlier and more specific deficits than one in a less critical region."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "causes_risk",
+      "patterns": ["Causes of brain tumors", "Risk factors", "What causes brain cancer", "Is brain tumor genetic", "Radiation risk brain tumor", "Why do people get brain tumors"],
+      "responses": [
+        "Most primary brain tumors have no identifiable cause. Confirmed risk factors include prior ionizing radiation to the head and certain inherited genetic syndromes (neurofibromatosis, Li-Fraumeni, tuberous sclerosis, von Hippel-Lindau, etc.). Age and male sex slightly increase risk for some types. No strong evidence links cell phones or common lifestyle factors to brain tumors.",
+        "The majority of cases are sporadic. Genetic predisposition accounts for only a small percentage."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "diagnosis_overview",
+      "patterns": ["How are brain tumors diagnosed", "Diagnosis of brain tumor", "Tests for brain tumor", "How do doctors diagnose brain cancer"],
+      "responses": [
+        "Typical pathway: neurological examination → MRI with and without contrast (gold standard) → sometimes CT, advanced MRI (perfusion, spectroscopy, diffusion), PET → tissue diagnosis via biopsy or resection. Molecular testing on the tissue is now standard for most gliomas. Diagnosis is a multidisciplinary process.",
+        "Imaging suggests the diagnosis; pathology + molecular profiling confirms and classifies it."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "mri_role",
+      "patterns": ["Role of MRI in brain tumors", "Why MRI for brain tumor", "MRI sequences brain tumor", "Best scan for brain tumor"],
+      "responses": [
+        "MRI is the most important imaging modality. Standard protocol includes T1, contrast-enhanced T1 (T1ce), T2, and FLAIR. These four sequences are also the basis for almost all brain tumor segmentation research (e.g., BraTS). Advanced sequences add physiological information (blood flow, cellularity, metabolism).",
+        "MRI provides excellent soft-tissue contrast and multi-planar detail that CT cannot match for brain tumors."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "biopsy",
+      "patterns": ["Brain tumor biopsy", "Do I need a biopsy", "Stereotactic biopsy", "How is brain tumor tissue obtained"],
+      "responses": [
+        "A biopsy obtains tissue for histological and molecular diagnosis. It can be done stereotactically (minimally invasive needle biopsy) or during open surgical resection. Risks include bleeding and neurological deficit, so the decision balances diagnostic need against surgical risk. Some tumors in very eloquent or risky locations may be treated based on imaging alone in selected cases.",
+        "Tissue diagnosis remains the gold standard for most brain tumors, especially when treatment decisions depend on molecular markers."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "treatment_overview",
+      "patterns": ["Treatment for brain tumors", "How are brain tumors treated", "Brain tumor treatment options", "Can brain tumors be cured"],
+      "responses": [
+        "Treatment is individualized and may include maximal safe surgical resection, radiation therapy, chemotherapy, targeted therapy, immunotherapy, tumor-treating fields, and supportive care. Goals range from cure (some low-grade or benign tumors) to disease control and quality of life. Multidisciplinary tumor boards guide decisions. This is general information only.",
+        "Surgery, radiotherapy, and systemic therapies are the three main pillars. Clinical trials are often recommended, especially for high-grade tumors."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "surgery",
+      "patterns": ["Brain tumor surgery", "Craniotomy", "Awake brain surgery", "Maximal safe resection", "Surgical treatment of glioma"],
+      "responses": [
+        "Surgery aims for maximal safe resection — removing as much tumor as possible while preserving neurological function. Techniques include neuronavigation, intraoperative MRI, fluorescence guidance (5-ALA), and awake mapping for eloquent areas. Complete removal is often not possible for infiltrative gliomas. Surgery also provides tissue for diagnosis.",
+        "The extent of resection is one of the most important modifiable prognostic factors for many brain tumors."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "radiation",
+      "patterns": ["Radiation therapy brain tumor", "Radiotherapy for glioma", "Stereotactic radiosurgery", "SRS vs whole brain radiation", "Radiation side effects brain"],
+      "responses": [
+        "Radiation is a cornerstone for many malignant and some benign brain tumors. Options include fractionated external beam radiotherapy, stereotactic radiosurgery (SRS/Gamma Knife/CyberKnife) for smaller lesions, and sometimes proton therapy. Side effects can be acute (fatigue, hair loss, nausea) or late (cognitive changes, radiation necrosis). Modern techniques try to spare healthy tissue.",
+        "For glioblastoma, radiation is usually given with concurrent temozolomide (Stupp protocol)."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "chemotherapy",
+      "patterns": ["Chemotherapy for brain tumors", "Temozolomide", "TMZ", "Chemo for glioblastoma", "Systemic therapy brain cancer"],
+      "responses": [
+        "Temozolomide (TMZ) is the most commonly used chemotherapy for gliomas, especially glioblastoma. Other agents include PCV (procarbazine, CCNU, vincristine) for some oligodendrogliomas, and various agents for metastases depending on the primary cancer. The blood-brain barrier limits drug delivery, which is a major challenge. MGMT methylation status helps predict TMZ benefit.",
+        "Chemotherapy is often combined with radiation and used adjuvantly or at recurrence."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "targeted_immunotherapy",
+      "patterns": ["Targeted therapy brain tumor", "Immunotherapy for brain cancer", "New treatments glioblastoma", "Bevacizumab", "Checkpoint inhibitors brain"],
+      "responses": [
+        "Targeted therapies and immunotherapies are active research areas. Bevacizumab (anti-VEGF) is used in some recurrent glioblastomas for symptom control. IDH inhibitors, BRAF/MEK inhibitors (for specific mutations), and various immunotherapy approaches (checkpoint inhibitors, vaccines, CAR-T) are being studied, with success so far more limited in glioblastoma than in many other cancers. Clinical trials are the main route to access newer agents.",
+        "Molecular profiling is increasingly used to match patients to targeted options or trials."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "prognosis",
+      "patterns": ["Prognosis brain tumor", "Survival rates", "Life expectancy glioblastoma", "Outlook for glioma patients", "How serious is my tumor type"],
+      "responses": [
+        "Prognosis varies dramatically by tumor type, grade, molecular markers, patient age, performance status, and extent of resection. Low-grade IDH-mutant tumors can have survival measured in many years; glioblastoma still has a median survival around 15–18 months with standard treatment, though some patients live much longer. Statistics are averages — individual outcomes differ. Discuss personal prognosis only with the treating oncology team.",
+        "Molecular features have refined prognosis significantly compared with older purely histological estimates."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "segmentation_definition",
+      "patterns": ["What is brain tumor segmentation", "Define tumor segmentation", "Explain brain tumor segmentation", "What does segmenting a tumor mean", "MRI tumor segmentation meaning"],
+      "responses": [
+        "Brain tumor segmentation is the process of identifying and delineating the different parts of a tumor (and often the surrounding edema) on medical images, almost always multi-modal MRI. The usual sub-regions are: enhancing tumor (ET), necrotic/non-enhancing core (NCR), and peritumoral edema (ED). Accurate segmentation supports diagnosis, surgical and radiation planning, response assessment, and research.",
+        "It converts qualitative images into quantitative masks that can be measured and tracked over time."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "why_segmentation_matters",
+      "patterns": ["Why is tumor segmentation important", "Importance of brain tumor segmentation", "Benefits of accurate segmentation", "Why do we segment brain tumors"],
+      "responses": [
+        "Accurate segmentation enables precise tumor volume measurement, better surgical and radiotherapy planning, objective monitoring of treatment response, radiomics analyses, and training of AI models. Manual segmentation by experts is time-consuming and suffers from inter-observer variability, so reliable automated methods are highly valuable clinically and scientifically.",
+        "It is a foundational step for almost all quantitative imaging work in neuro-oncology."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "segmentation_subregions",
+      "patterns": ["Tumor subregions", "Enhancing tumor necrotic edema", "What are ET NCR ED", "BraTS labels", "Segmentation labels meaning"],
+      "responses": [
+        "In the widely used BraTS convention: Enhancing Tumor (ET) = regions that enhance on T1ce, Necrotic/Non-enhancing Core (NCR) = hypointense on T1ce within the tumor, Edema (ED) = hyperintense on FLAIR/T2 around the tumor. Whole tumor (WT) = ET + NCR + ED, Tumor core (TC) = ET + NCR. These definitions allow standardized evaluation of algorithms.",
+        "Different clinical questions may focus on different sub-regions (e.g., enhancing tumor for response assessment)."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "segmentation_methods",
+      "patterns": ["Methods for brain tumor segmentation", "How is segmentation done", "Traditional vs deep learning segmentation", "Algorithms for tumor segmentation"],
+      "responses": [
+        "Older methods used thresholding, region growing, clustering, active contours, or atlas-based approaches. Current state-of-the-art is deep learning — primarily convolutional neural networks. U-Net and its many variants (nnU-Net, Attention U-Net, etc.), residual networks, and more recently transformer-based or hybrid models dominate. Most are trained on the four standard MRI modalities.",
+        "Fully automated deep-learning methods now approach or sometimes exceed average human inter-rater performance on public benchmarks, though clinical robustness remains an active research area."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "unet_and_dl",
+      "patterns": ["U-Net brain tumor", "Deep learning tumor segmentation", "CNN for segmentation", "nnU-Net", "How does deep learning segment tumors"],
+      "responses": [
+        "U-Net (and nnU-Net, which automatically configures itself to a dataset) is the workhorse architecture for medical image segmentation. It uses an encoder-decoder structure with skip connections to combine high-level context and fine spatial detail. Models are usually trained with combinations of Dice loss and cross-entropy. Data augmentation, ensemble methods, and post-processing further improve results.",
+        "Deep learning has largely replaced classical machine-learning pipelines for this task because of superior accuracy and the ability to learn hierarchical features directly from data."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "brats",
+      "patterns": ["What is BraTS", "BraTS challenge", "Brain tumor segmentation challenge", "BraTS dataset", "Tell me about BraTS"],
+      "responses": [
+        "BraTS (Brain Tumor Segmentation Challenge) is an annual MICCAI challenge that provides multi-institutional, multi-modal MRI scans of gliomas with expert annotations of the tumor sub-regions. It has been the primary public benchmark driving progress in automated brain tumor segmentation since 2012. Many of the best-performing methods each year are published and influence clinical research tools.",
+        "BraTS standardized both the data and the evaluation metrics (Dice score, Hausdorff distance) used by the community."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "evaluation_metrics",
+      "patterns": ["How is segmentation evaluated", "Dice score tumor", "Hausdorff distance", "Metrics for brain tumor segmentation", "What is a good Dice score"],
+      "responses": [
+        "The two most common metrics are the Dice similarity coefficient (overlap measure, range 0–1, higher better) and the Hausdorff distance (especially the 95th percentile, measuring boundary error in millimeters, lower better). Separate scores are usually reported for enhancing tumor, tumor core, and whole tumor. Clinical acceptability also depends on whether errors occur in critical locations.",
+        "A Dice score above 0.85–0.90 for whole tumor is often considered strong on public benchmarks, but clinical use requires additional validation."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "challenges_segmentation",
+      "patterns": ["Challenges in brain tumor segmentation", "Why is tumor segmentation hard", "Problems with automatic segmentation", "Limitations of AI segmentation"],
+      "responses": [
+        "Major challenges include: limited annotated data, class imbalance (enhancing tumor is often small), variability across scanners and protocols (domain shift), ambiguous boundaries especially for edema and infiltrative tumor, and the need for clinical robustness and uncertainty estimation. Annotator variability also means there is no single perfect ground truth.",
+        "Models that perform well on BraTS data may still need careful adaptation and validation before clinical deployment."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "clinical_use_segmentation",
+      "patterns": ["Is AI segmentation used clinically", "Clinical application of tumor segmentation", "Do hospitals use automatic segmentation", "Segmentation in radiation planning"],
+      "responses": [
+        "Automatic or semi-automatic segmentation is increasingly used in research and in some clinical workflows, particularly for radiotherapy planning and longitudinal volume tracking. Fully autonomous clinical use is still limited; most systems operate as decision-support tools that a clinician reviews and edits. Regulatory approval and local validation are required for routine clinical deployment.",
+        "The technology is maturing rapidly, but human oversight remains essential."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "pediatric_tumors",
+      "patterns": ["Pediatric brain tumors", "Brain tumors in children", "Medulloblastoma", "Childhood brain cancer", "Kids brain tumor types"],
+      "responses": [
+        "Brain tumors are the most common solid tumors in children. Frequent types include medulloblastoma, pilocytic astrocytoma, ependymoma, brainstem gliomas, and craniopharyngioma. Biology, treatment, and prognosis differ substantially from adult tumors. Long-term side effects of treatment on the developing brain are a major concern. Care is highly specialized.",
+        "Molecular subgrouping has transformed the understanding and treatment of several pediatric brain tumors, especially medulloblastoma."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "living_with",
+      "patterns": ["Living with a brain tumor", "Quality of life brain tumor", "Support for brain tumor patients", "Side effects of treatment", "Cognitive effects"],
+      "responses": [
+        "Living with a brain tumor often involves managing seizures, fatigue, cognitive changes, mood issues, physical disabilities, and the emotional impact of the diagnosis. Rehabilitation, neuropsychology, supportive medications, and patient support organizations can help. Open communication with the care team about symptoms and goals is important. This is general information — personal support plans are made with healthcare professionals.",
+        "Quality of life is a central part of modern neuro-oncology care alongside tumor control."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "clinical_trials",
+      "patterns": ["Clinical trials brain tumor", "New treatments trials", "How to find brain tumor trials", "Experimental therapy glioma"],
+      "responses": [
+        "Clinical trials are a critical option, especially for high-grade and recurrent tumors. They test new drugs, combinations, radiation techniques, devices, and immunotherapies. Resources such as clinicaltrials.gov, the National Brain Tumor Society, and the treating center’s trial office can help identify suitable studies. Eligibility depends on tumor type, prior treatments, molecular markers, and patient condition.",
+        "Discussing trials early with the neuro-oncology team is recommended."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "when_to_see_doctor",
+      "patterns": ["When should I see a doctor", "Warning signs that need medical attention", "Should I worry about my headaches", "Red flags brain tumor"],
+      "responses": [
+        "Seek prompt medical attention for new or changing headaches (especially with nausea, waking at night, or neurological symptoms), first-time seizures, progressive weakness or numbness, sudden vision changes, unexplained personality or cognitive changes, or any focal neurological deficit. Only a proper medical evaluation can determine the cause. This chatbot cannot diagnose or triage individual cases.",
+        "Persistent or progressive neurological symptoms always warrant professional assessment."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "myths",
+      "patterns": ["Brain tumor myths", "Common misconceptions", "Does cell phone cause brain tumor", "Can stress cause brain cancer", "Myths about brain tumors"],
+      "responses": [
+        "Common myths include: cell phones definitively cause brain tumors (evidence is weak/inconclusive), all brain tumors are rapidly fatal, or that alternative therapies can replace standard care. Most brain tumors are not strongly linked to lifestyle factors. Reliable information comes from neuro-oncology specialists and established organizations rather than unverified online claims.",
+        "Evidence-based medicine remains the foundation of care."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "prevention",
+      "patterns": ["Can brain tumors be prevented", "Prevention of brain cancer", "How to reduce risk of brain tumor"],
+      "responses": [
+        "There is no proven way to prevent most primary brain tumors. Avoiding unnecessary ionizing radiation (especially in childhood) is one of the few established measures. Genetic counseling may be relevant for families with known hereditary syndromes. General healthy lifestyle habits support overall well-being but have not been shown to specifically prevent brain tumors.",
+        "Focus on early recognition of symptoms and timely medical evaluation rather than prevention, since most risk factors are not modifiable."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "more_details",
+      "patterns": ["Tell me more", "Can you explain more", "Go deeper", "More details", "Elaborate", "I want to know more about that", "Continue"],
+      "responses": [
+        "Of course — which part would you like me to expand on? A specific tumor type, symptoms, treatment modality, molecular markers, or the technical side of segmentation?",
+        "Happy to go deeper. Just name the topic (e.g., glioblastoma treatment, U-Net architecture, BraTS metrics, etc.)."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "clarify",
+      "patterns": ["What do you mean", "I don't understand", "Can you simplify", "Explain in simple terms", "I'm confused", "Say that differently"],
+      "responses": [
+        "Let me try a simpler explanation. Which topic should I rephrase — the clinical part or the segmentation/AI part?",
+        "No problem. Tell me which concept was unclear and I’ll explain it more plainly."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "yes_response",
+      "patterns": ["Yes", "Yeah", "Yup", "Sure", "Okay", "Yes please", "Go ahead"],
+      "responses": [
+        "Great — what would you like me to cover next?",
+        "Alright, go ahead and ask your next question or tell me the topic."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "no_response",
+      "patterns": ["No", "Nope", "Not now", "That's enough", "No thanks"],
+      "responses": [
+        "Okay. If you think of anything else about brain tumors or segmentation later, just ask.",
+        "No problem. I'm here whenever you want to continue."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "fallback",
+      "patterns": ["Random question", "What is the weather", "Tell me a joke", "Who won the game", "Unrelated topic", "Something else entirely", "I have a different question"],
+      "responses": [
+        "I'm specialized in brain tumors and brain tumor segmentation. I can help with types, symptoms, diagnosis, treatment, prognosis, MRI, deep-learning segmentation, BraTS, and related topics. Could you rephrase or ask something in this domain?",
+        "My knowledge is focused on neuro-oncology and medical image segmentation. Try asking about glioblastoma, meningioma, tumor grading, or how U-Net segments MRI scans."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "not_medical_advice",
+      "patterns": ["Is this medical advice", "Can I follow your advice", "Are you a substitute for a doctor", "Should I use this instead of seeing a doctor", "Is this personalized"],
+      "responses": [
+        "No. Everything I provide is general educational information only. It is not personalized medical advice, diagnosis, or a treatment recommendation. Always consult qualified physicians and specialists for any health decisions.",
+        "I am an informational tool, not a healthcare provider. Please seek professional medical care."
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "resources",
+      "patterns": ["Where can I learn more", "Reliable resources", "Patient organizations", "Good websites for brain tumors", "Support groups"],
+      "responses": [
+        "Reliable starting points include the National Brain Tumor Society, American Brain Tumor Association, Brain Tumor Foundation, National Cancer Institute (NCI), and your treating hospital’s neuro-oncology resources. For segmentation research, look at the BraTS challenge papers and MICCAI proceedings. Always cross-check information with your medical team.",
+        "Patient advocacy organizations often provide excellent educational materials and support services."
+      ],
+      "context_set": ""
+    }
+  ]
+}

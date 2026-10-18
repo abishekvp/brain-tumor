@@ -1,0 +1,477 @@
+{% if user.is_authenticated %}
+
+<!-- ===== FLOATING CHAT ASSISTANT - Brain Tumor Project ===== -->
+<style>
+  /* ===== RESET ===== */
+  #chatbot-wrapper * {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  /* ===== FLOATING BUTTON ===== */
+  #chat-circle {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 2147483647;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #4fc3f7, #0288d1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(2, 136, 209, 0.35);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: softPulse 2.8s ease-in-out infinite;
+  }
+  #chat-circle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 36px rgba(2, 136, 209, 0.45);
+  }
+  #chat-circle .material-icons, #chat-circle i {
+    font-size: 28px;
+  }
+
+  @keyframes softPulse {
+    0%, 100% { box-shadow: 0 8px 28px rgba(2, 136, 209, 0.35); }
+    50% { box-shadow: 0 8px 36px rgba(2, 136, 209, 0.55); }
+  }
+
+  /* ===== CHAT BOX ===== */
+  .chat-box {
+    position: fixed;
+    display: none;
+    right: 28px;
+    bottom: 110px;
+    z-index: 2147483647;
+    width: 370px;
+    max-height: 560px;
+    background: #f0f9ff;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(2, 136, 209, 0.18);
+    border: 1px solid #b3e5fc;
+    overflow: hidden;
+    animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ===== HEADER ===== */
+  .chat-box-header {
+    background: linear-gradient(135deg, #0288d1, #0277bd);
+    color: #fff;
+    padding: 15px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chat-box-header .status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 400;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .chat-box-header .status .dot {
+    width: 7px;
+    height: 7px;
+    background: #81d4fa;
+    border-radius: 50%;
+    animation: blink 1.6s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .chat-box-toggle {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+  .chat-box-toggle:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* ===== BODY ===== */
+  .chat-box-body {
+    padding: 16px;
+    height: 320px;
+    overflow-y: auto;
+    background: #f8fcff;
+  }
+  .chat-box-body::-webkit-scrollbar {
+    width: 5px;
+  }
+  .chat-box-body::-webkit-scrollbar-thumb {
+    background: #81d4fa;
+    border-radius: 10px;
+  }
+
+  /* ===== MESSAGES ===== */
+  .chat-msg {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    animation: msgIn 0.25s ease;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chat-msg.self {
+    flex-direction: row-reverse;
+  }
+
+.msg-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #b3e5fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e3f2fd;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.msg-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.msg-avatar i {
+  font-size: 18px;
+  color: #0277bd;
+  line-height: 1;
+}
+
+  .cm-msg-text {
+    max-width: 75%;
+    padding: 11px 15px;
+    border-radius: 16px;
+    margin: 0 10px;
+    font-size: 14px;
+    line-height: 1.45;
+    word-wrap: break-word;
+  }
+  .chat-msg.user .cm-msg-text {
+    background: linear-gradient(135deg, #0288d1, #039be5);
+    color: #fff;
+    border-bottom-left-radius: 4px;
+  }
+  .chat-msg.self .cm-msg-text {
+    background: #e1f5fe;
+    color: #01579b;
+    border: 1px solid #b3e5fc;
+    border-bottom-right-radius: 4px;
+  }
+
+  /* ===== INPUT ===== */
+  .chat-input-wrapper {
+    padding: 12px 14px;
+    background: #e3f2fd;
+    border-top: 1px solid #bbdefb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #chat-input {
+    flex: 1;
+    padding: 11px 16px;
+    border: 1px solid #90caf9;
+    border-radius: 30px;
+    outline: none;
+    background: #fff;
+    color: #01579b;
+    font-size: 14px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  #chat-input:focus {
+    border-color: #0288d1;
+    box-shadow: 0 0 0 3px rgba(2, 136, 209, 0.15);
+  }
+  #chat-input::placeholder {
+    color: #81d4fa;
+  }
+
+  .chat-submit, #voice-btn {
+    background: linear-gradient(135deg, #0288d1, #0277bd);
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex-shrink: 0;
+  }
+  .chat-submit:hover, #voice-btn:hover {
+    transform: scale(1.07);
+    box-shadow: 0 4px 14px rgba(2, 136, 209, 0.4);
+  }
+  .chat-submit .material-icons, .chat-submit i, #voice-btn i {
+    font-size: 18px;
+  }
+
+  /* ===== LANGUAGE BAR ===== */
+  .chat-controls {
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #e8f5fe;
+    border-bottom: 1px solid #bbdefb;
+  }
+  #voice-lang {
+    flex: 1;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #90caf9;
+    background: #fff;
+    color: #0277bd;
+    font-size: 12px;
+    outline: none;
+  }
+  #recognizing-status {
+    display: none;
+    background: #4fc3f7;
+    color: #01579b;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 500px) {
+    .chat-box {
+      width: 94%;
+      right: 3%;
+      bottom: 90px;
+      max-height: 70vh;
+    }
+    #chat-circle {
+      width: 56px;
+      height: 56px;
+      right: 20px;
+      bottom: 20px;
+    }
+  }
+</style>
+
+<!-- Material Icons + Font Awesome (only if not already in base) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div id="chatbot-wrapper">
+  <!-- Floating Button -->
+  <div id="chat-circle" title="Ask AI Assistant">
+    <i class="fas fa-robot"></i>
+  </div>
+
+  <!-- Chat Window -->
+  <div class="chat-box">
+    <div class="chat-box-header">
+      <span><i class="fas fa-brain" style="margin-right: 8px;"></i>Brain Tumor AI Assistant</span>
+      <span class="status">
+        <span class="dot"></span> Online
+      </span>
+      <span class="chat-box-toggle">
+        <i class="material-icons" style="font-size:20px;">close</i>
+      </span>
+    </div>
+
+    <div class="chat-box-body chat-logs">
+      <!-- Welcome message will be injected by JS -->
+    </div>
+
+    <div class="chat-controls">
+      <select id="voice-lang"></select>
+      <span id="recognizing-status"><i class="fas fa-microphone-alt" style="margin-right: 4px;"></i>Listening...</span>
+    </div>
+
+    <div class="chat-input-wrapper">
+      <input type="text" id="chat-input" placeholder="Ask about brain tumor, symptoms, scan...">
+      <button class="chat-submit" id="chat-submit">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+      <button id="voice-btn" title="Voice input">
+        <i class="fas fa-microphone"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  // ===== TOGGLE =====
+  $('#chat-circle').click(() => $('.chat-box').fadeIn(280));
+  $('.chat-box-toggle').click(() => $('.chat-box').fadeOut(250));
+
+  // ===== WELCOME MESSAGE =====
+  $(document).ready(function () {
+    setTimeout(() => {
+      generate_message("Hello! I'm your Brain Tumor AI Assistant. You can ask me about symptoms, MRI analysis, treatment options, or how to use this system.", 'user');
+    }, 400);
+  });
+
+  // ===== SEND MESSAGE =====
+  $('#chat-submit').click(async function (e) {
+    e.preventDefault();
+    let userMsg = $('#chat-input').val().trim();
+    if (!userMsg) return;
+
+    const selectedLang = $('#voice-lang').val() || 'en-US';
+
+    // Show user message immediately
+    generate_message(userMsg, 'self');
+    $('#chat-input').val('');
+
+    // Disable button while waiting
+    $('#chat-submit').prop('disabled', true);
+
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'chatbot' %}",
+      data: {
+        question: userMsg,
+        language: selectedLang,          // ← IMPORTANT: send selected language
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function (response) {
+        const reply = response.response || "Sorry, I couldn't process that.";
+        generate_message(reply, 'user');
+      },
+      error: function () {
+        generate_message("Sorry, something went wrong. Please try again.", 'user');
+      },
+      complete: function () {
+        $('#chat-submit').prop('disabled', false);
+      }
+    });
+  });
+
+  // Enter key
+  $('#chat-input').keypress(function (e) {
+    if (e.which === 13) $('#chat-submit').click();
+  });
+
+  // ===== MESSAGE RENDER =====
+  function generate_message(msg, type) {
+    const isSelf = type === 'self';
+
+    const avatarHTML = isSelf
+      ? `<i class="fas fa-user-md"></i>`
+      : `<i class="fas fa-robot"></i>`;
+
+    const str = `
+      <div class="chat-msg ${type}">
+        <div class="msg-avatar">
+          ${avatarHTML}
+        </div>
+        <div class="cm-msg-text">${msg}</div>
+      </div>`;
+    $('.chat-logs').append(str);
+    $('.chat-box-body').scrollTop($('.chat-box-body')[0].scrollHeight);
+  }
+
+  // ===== VOICE INPUT (Improved) =====
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+  const recog = new SpeechRecognition();
+  recog.interimResults = false;
+  recog.continuous = false;
+  recog.maxAlternatives = 1;
+
+  $('#voice-btn').on('click', function () {
+    const selectedLang = $('#voice-lang').val() || 'en-US';
+    recog.lang = selectedLang;
+
+    $('#recognizing-status').show();
+    $('#voice-btn').css('background', '#ef5350'); // red while listening
+
+    try {
+      recog.start();
+    } catch (err) {
+      console.error("Speech start error:", err);
+      $('#recognizing-status').hide();
+      $('#voice-btn').css('background', '');
+    }
+  });
+
+  recog.onresult = function (event) {
+    const transcript = event.results[0][0].transcript;
+    console.log("Heard:", transcript);           // ← check browser console
+
+    $('#chat-input').val(transcript);
+    $('#recognizing-status').hide();
+    $('#voice-btn').css('background', '');
+
+    // Automatically send the message
+    setTimeout(() => {
+      $('#chat-submit').click();
+    }, 300);
+  };
+
+  recog.onerror = function (event) {
+    console.error("Speech recognition error:", event.error);
+    $('#recognizing-status').hide();
+    $('#voice-btn').css('background', '');
+
+    if (event.error === 'no-speech') {
+      alert("No speech detected. Please try again.");
+    } else if (event.error === 'not-allowed') {
+      alert("Microphone permission denied. Please allow microphone access.");
+    }
+  };
+
+  recog.onend = function () {
+    $('#recognizing-status').hide();
+    $('#voice-btn').css('background', '');
+  };
+
+} else {
+  console.warn("Speech Recognition not supported in this browser");
+  $('#voice-btn').hide(); // hide button if not supported
+}
+
+  // ===== LANGUAGE SELECT =====
+  function populateVoices() {
+    const select = document.getElementById('voice-lang');
+    select.innerHTML = '';
+    const options = [
+      { lang: 'en-US', name: 'English' },
+      { lang: 'hi-IN', name: 'Hindi' },
+      { lang: 'ta-IN', name: 'Tamil' },
+      { lang: 'te-IN', name: 'Telugu' },
+      { lang: 'kn-IN', name: 'Kannada' },
+      { lang: 'ml-IN', name: 'Malayalam' }
+    ];
+    options.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.lang;
+      opt.textContent = o.name;
+      select.appendChild(opt);
+    });
+  }
+  populateVoices();
+</script>
+{% endif %}

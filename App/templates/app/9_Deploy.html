@@ -1,0 +1,514 @@
+{% include 'chatbot/widget.html' %}
+<!DOCTYPE html>
+
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Implementation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Open Sans", sans-serif;
+        }
+
+        html, body {
+            min-height: 100vh;
+            width: 100%;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ---- Video Background ---- */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .video-bg video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+        .video-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .video-bg .fallback-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0f1f 0%, #1a2a4a 50%, #0a1a3a 100%);
+            z-index: 0;
+        }
+
+        /* ---- Main Container ---- */
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 700px;
+            padding: 20px;
+        }
+
+        /* ---- Glassmorphism Card ---- */
+        .box {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 35px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 60px 0px;
+            transition: all 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .box:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* ---- Scrollbar Styling ---- */
+        .box::-webkit-scrollbar {
+            width: 6px;
+        }
+        .box::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .box::-webkit-scrollbar-thumb {
+            background: #5469d4;
+            border-radius: 10px;
+        }
+        .box::-webkit-scrollbar-thumb:hover {
+            background: #6a7de0;
+        }
+
+        /* ---- Header ---- */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        .header h1:after {
+            content: "";
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, #7fd3ed, #5469d4);
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        /* ---- Home Link ---- */
+        .home-link {
+            display: inline-block;
+            color: #7fd3ed;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 15px;
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        .home-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        .home-link i {
+            margin-right: 8px;
+        }
+
+        /* ---- Form ---- */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        /* ---- File Upload Area ---- */
+        .file-upload-area {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-height: 120px;
+        }
+        .file-upload-area:hover {
+            border-color: #7fd3ed;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .file-upload-area.is-active {
+            border-color: #7fd3ed;
+            background: rgba(127, 211, 237, 0.1);
+        }
+
+        .file-upload-area input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: #7fd3ed;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+        .upload-text .highlight {
+            color: #7fd3ed;
+            font-weight: 600;
+        }
+
+        .file-name-display {
+            color: #7fd3ed;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: none;
+        }
+        .file-name-display.show {
+            display: block;
+        }
+
+        /* ---- Submit Button ---- */
+        .submit-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #5469d4 0%, #3a4fb8 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(84, 105, 212, 0.3);
+            letter-spacing: 0.5px;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(84, 105, 212, 0.5);
+            background: linear-gradient(135deg, #6a7de0 0%, #4a5fc8 100%);
+        }
+
+        /* ---- Results ---- */
+        .results-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-output {
+            color: #7fd3ed;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .image-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease;
+        }
+        .image-card:hover {
+            transform: scale(1.02);
+        }
+
+        .image-card h4 {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .image-card img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .image-card img:hover {
+            transform: scale(1.05);
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .box {
+                padding: 25px 20px;
+            }
+            .image-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .submit-btn {
+                max-width: 100%;
+            }
+            .file-upload-area {
+                padding: 20px 15px;
+                min-height: 100px;
+            }
+            .upload-icon {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 1.2rem;
+            }
+            .box {
+                padding: 18px 15px;
+                border-radius: 16px;
+            }
+            .home-link {
+                font-size: 0.85rem;
+                padding: 6px 14px;
+            }
+            .image-card img {
+                max-height: 180px;
+            }
+            .result-output {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video Background -->
+    <div class="video-bg">
+        <div class="fallback-bg"></div>
+        <video autoplay muted loop playsinline id="bgVideo">
+            <source src="static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.webm" type="video/webm">
+            <source src="/static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.webm" type="video/webm">
+            <source src="static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.mp4" type="video/mp4">
+            <source src="/static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="box">
+
+            <!-- Header -->
+            <div class="header">
+                <a href="/" class="home-link"><i class="fas fa-arrow-left"></i> HOME</a>
+                <h1><i class="fas fa-brain" style="color: #7fd3ed; margin-right: 10px;"></i>Model Implementation</h1>
+                <p class="subtitle">Upload an image for brain tumor segmentation</p>
+            </div>
+
+            <!-- Form -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- File Upload Area -->
+                <div class="file-upload-area" id="dropArea">
+                    <input type="file" name="image" id="fileInput" accept="image/*" required>
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-text">
+                        <span class="highlight">Choose a file</span> or drag it here
+                    </div>
+                    <div class="file-name-display" id="fileNameDisplay"><i class="fas fa-file-image" style="margin-right: 6px;"></i><span id="fileName"></span></div>
+                </div>
+
+                <!-- Submit Button -->
+                <button class="submit-btn" type="submit"><i class="fas fa-microscope" style="margin-right: 8px;"></i>Analyze Image</button>
+            </form>
+
+            <!-- Results -->
+            {% if obj %}
+            <div class="results-section">
+                <div class="result-output">
+                    {{ output | upper }}
+                </div>
+
+                <div class="image-grid">
+                    <div class="image-card">
+                        <h4><i class="fas fa-x-ray" style="margin-right: 6px; color: #7fd3ed;"></i>Original Image</h4>
+                        <img src="{{ obj.image.url }}" alt="Original Image">
+                    </div>
+                    <div class="image-card">
+                        <h4><i class="fas fa-crosshairs" style="margin-right: 6px; color: #7fd3ed;"></i>Segmented Mask</h4>
+                        <img src="{{ image_uri }}" alt="Segmented Mask">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <script>
+        // ---- Video Auto-Play ----
+        document.addEventListener('DOMContentLoaded', function() {
+            var video = document.getElementById('bgVideo');
+            video.muted = true;
+            video.setAttribute('playsinline', '');
+
+            var playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    console.log('Video playing');
+                }).catch(function(error) {
+                    console.log('Auto-play prevented:', error);
+                    document.addEventListener('click', function playOnClick() {
+                        video.play().then(function() {
+                            document.removeEventListener('click', playOnClick);
+                        }).catch(function(e) {});
+                    });
+                });
+            }
+
+            video.addEventListener('error', function(e) {
+                console.log('Video error:', e);
+                setTimeout(function() {
+                    video.load();
+                    video.play().catch(function() {});
+                }, 1000);
+            });
+        });
+
+        // ---- File Upload Interaction ----
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropArea = document.getElementById('dropArea');
+            var fileInput = document.getElementById('fileInput');
+            var fileNameDisplay = document.getElementById('fileNameDisplay');
+            var fileNameSpan = document.getElementById('fileName');
+
+            // Click on drop area triggers file input
+            dropArea.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'INPUT') {
+                    fileInput.click();
+                }
+            });
+
+            // File selected
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    var name = this.files[0].name;
+                    fileNameSpan.textContent = name;
+                    fileNameDisplay.classList.add('show');
+                    dropArea.classList.add('is-active');
+                } else {
+                    fileNameDisplay.classList.remove('show');
+                    dropArea.classList.remove('is-active');
+                }
+            });
+
+            // Drag and drop events
+            dropArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropArea.classList.add('is-active');
+            });
+
+            dropArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropArea.classList.remove('is-active');
+            });
+
+            dropArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropArea.classList.remove('is-active');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    fileInput.files = e.dataTransfer.files;
+                    var name = e.dataTransfer.files[0].name;
+                    fileNameSpan.textContent = name;
+                    fileNameDisplay.classList.add('show');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

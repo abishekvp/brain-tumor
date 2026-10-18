@@ -1,0 +1,842 @@
+{% include 'chatbot/widget.html' %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjs0ry9Z2lOOVtjopBoTk80jBRbeWCHyyahQ&s" type="">
+
+ <title> Qbit Brain · AI Brain Tumor Segmentation System </title>
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <!--owl slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- font awesome style -->
+  <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
+
+  <!-- Custom styles for this template -->
+  <link href="/static/css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="/static/css/responsive.css" rel="stylesheet" />
+
+ <style>
+    /* ===== Global / full page sizing ===== */
+    html, body {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;   /* stops horizontal cropping */
+        -webkit-text-size-adjust: 100%;
+    }
+
+    /* ===== HERO BACKGROUND VIDEO ===== */
+    .hero_area {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .hero_bg_box {
+        position: absolute;
+        inset: 0;                 /* shorthand for top/left/right/bottom: 0 */
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    .bg-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%);
+        object-fit: cover;         /* fills screen without distortion */
+        display: block;
+    }
+
+    .hero_bg_box::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    /* ===== NAVBAR BRAND (fixed – was broken) ===== */
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;                 /* proper space between logo & text */
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .navbar-brand .brand-icon {
+        font-size: 2rem;           /* larger logo (was "large") */
+        color: #7fd3ed;
+        flex-shrink: 0;            /* never squish the icon */
+        line-height: 1;
+    }
+
+    .navbar-brand .brand-text {
+        font-size: 1.35rem;
+        background: linear-gradient(90deg, #ffffff 0%, #7fd3ed 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        white-space: nowrap;
+    }
+
+    /* ===== Stacking context ===== */
+    .slider_section,
+    .header_section {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== Department cards ===== */
+    .department_section .box {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        background: #fff;
+        padding: 25px 20px 30px;
+    }
+    .department_section .box:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+    .department_section .img-box {
+        width: 100%;
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0f5fe;
+        border-radius: 12px;
+        margin-bottom: 18px;
+        padding: 15px;
+    }
+    .department_section .img-box img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    .department_section .detail-box { flex: 1; display: flex; flex-direction: column; }
+    .department_section .detail-box h5 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1f3a6b;
+        margin-bottom: 12px;
+    }
+    .department_section .detail-box p {
+        flex: 1;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: #444;
+        margin-bottom: 0;
+    }
+    .department_section .row { display: flex; flex-wrap: wrap; }
+    .department_section .col-md-4 { display: flex; margin-bottom: 30px; }
+    .department_section .col-md-4 .box { width: 100%; }
+
+    .heading_container.heading_center { text-align: center; margin-bottom: 40px; }
+    .heading_container.heading_center h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #1f3a6b;
+    }
+    .heading_container.heading_center p {
+        max-width: 750px;
+        margin: 12px auto 0;
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    /* ===== About section video ===== */
+    .about_video_wrapper {
+        position: relative;
+        width: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        background: #000;
+        aspect-ratio: 16/9;
+    }
+    .about_video_wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .about_section .img-box {
+        padding: 0;
+        background: transparent;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .about_section .row { align-items: center; }
+
+    @media (max-width: 768px) {
+        .department_section .img-box { height: 140px; }
+        .department_section .detail-box h5 { font-size: 1.2rem; }
+        .about_section .img-box { margin-bottom: 30px; }
+        .navbar-brand .brand-icon { font-size: 1.6rem; }
+        .navbar-brand .brand-text { font-size: 1.05rem; }
+    }
+
+    /* ===== Cursor fixes (kept, but less aggressive) ===== */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        cursor: default;
+    }
+
+    /* Allow text selection on text content */
+    p, h1, h2, h3, h4, h5, h6, span, .detail-box, .heading_container {
+        cursor: text;
+        user-select: text;
+        -webkit-user-select: text;
+    }
+
+    /* Pointer on interactive elements */
+    a, button, .nav-link, .navbar-brand, .btn, .btn1, .btn2,
+    [role="button"], [onclick], .carousel-indicators li,
+    .navbar-toggler, .dropdown-toggle {
+        cursor: pointer !important;
+    }
+
+    /* Remove focus outline */
+    a:focus, button:focus, input:focus, textarea:focus, select:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+  <div class="hero_area">
+
+    <div class="hero_bg_box">
+      <video autoplay muted playsinline class="bg-video">
+        <!-- <source src="static/video/brain_network_pingpong.mp4" type="video/mp4">
+        <source src="/static/video/brain_network_pingpong.mp4" type="video/mp4"> -->
+        <source src="static/video/result_0_pingpong.webm#t=0,5.3" type="video/webm">
+        <source src="/static/video/result_0_pingpong.webm#t=0,5.3" type="video/webm">
+        <source src="static/video/result_0.webm.mp4#t=0,5.3" type="video/mp4">
+        <source src="/static/video/result_0.webm.mp4#t=0,5.3" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <i class="fas fa-brain" style= "color:rgb(140, 250, 226); font-size: 1.8rem; margin-left: 5px margin-right: 5px;"></i>
+          <span style="color:rgb(140, 250, 226);">Qubit Brain . </span>
+          <span>Brain Tumor Segmentation System</span>
+      </a>
+                
+              
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""> </span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users-home' %}"> Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users-profile' %}"> Profile</a>
+              </li>
+               <li class="nav-item">
+                <a class="nav-link" href="{% url 'model' %}">Model</a>
+              </li>
+          
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'Database' %}"> DATABASE</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout_view' %}">Logout</a>
+              </li>
+          
+             
+              {% else %}
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'login' %}">Login <span class="sr-only">(current)</span></a>
+              </li>
+              {% endif %}
+             
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+    {% if user.is_authenticated %}
+    <!-- slider section -->
+   <section class="slider_section">
+    <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-7">
+                <div class="detail-box">
+                  <h1>
+                    Brain Tumor Segmentation
+                  </h1>
+                  <p>
+                    This system leverages advanced deep learning–based image segmentation techniques to accurately identify and localize tumor regions in brain MRI scan images. By automating tumor detection, the platform supports early diagnosis, improves clinical decision-making, and reduces manual effort for medical professionals.
+                  </p>
+                  <div class="btn-box">
+                    <a href="{% url 'model' %}" class="btn1">
+                      Brain Tumor
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-item">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-7">
+                <div class="detail-box">
+                  <h1>
+                    Intelligent Medical Image Segmentation
+                  </h1>
+                  <p>
+                    Our deep learning models are trained on annotated brain MRI datasets to recognize complex patterns and boundaries in MRI images. Using convolutional neural networks, the system performs pixel-level segmentation, enabling precise identification of tumor regions that may not be easily visible through traditional imaging techniques.
+                  </p>
+                  <div class="btn-box">
+                    <a href="{% url 'model' %}" class="btn1">
+                      Brain Tumor
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-item">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-7">
+                <div class="detail-box">
+                  <h1>
+                    Accurate Diagnosis and Clinical Support
+                  </h1>
+                  <p>
+                    By combining deep learning and advanced segmentation architectures, this solution delivers reliable and consistent brain tumor detection results. It assists healthcare professionals in diagnosis, treatment planning, and monitoring disease progression, ultimately improving patient outcomes and clinical efficiency.
+                  </p>
+                  <div class="btn-box">
+                    <a href="{% url 'model' %}" class="btn1">
+                      Brain Tumor
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <ol class="carousel-indicators">
+        <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
+        <li data-target="#customCarousel1" data-slide-to="1"></li>
+        <li data-target="#customCarousel1" data-slide-to="2"></li>
+      </ol>
+
+    </div>
+  </section>
+
+  
+      {% else %}
+      <section class="slider_section">
+        <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+
+            <!-- Login Slide -->
+            <div class="carousel-item active">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-7">
+                    <div class="detail-box">
+                      <h1>
+                        Secure User Login
+                      </h1>
+                      <p>
+                        Access the Brain Tumor Segmentation platform through a secure login system. Authorized users can upload brain MRI images, view segmentation results, and manage diagnostic workflows with confidence and data privacy.
+                      </p>
+                      <div class="btn-box">
+                        <a href="{% url 'login' %}" class="btn1">
+                          Login
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Registration Slide -->
+            <div class="carousel-item">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-7">
+                    <div class="detail-box">
+                      <h1>
+                        Create Your Account
+                      </h1>
+                      <p>
+                        Register to gain access to the AI-powered brain tumor segmentation system. By creating an account, users can securely upload brain MRI images, receive automated tumor segmentation results, and track diagnostic insights efficiently.
+                      </p>
+                      <div class="btn-box">
+                        <a href="{% url 'users-register' %}" class="btn1">
+                          Register
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <ol class="carousel-indicators">
+            <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
+            <li data-target="#customCarousel1" data-slide-to="1"></li>
+          </ol>
+
+        </div>
+      </section>
+
+      {% endif %}
+      
+    <!-- end slider section -->
+  </div>
+
+
+  <!-- department section -->
+  {% if user.is_authenticated %}
+    <section class="department_section layout_padding">
+      <div class="department_container">
+        <div class="container">
+
+          <div class="heading_container heading_center">
+            <h2>
+              Brain Tumor Classifications
+            </h2>
+            <p>
+              Brain tumor classification using medical imaging helps identify abnormal growth patterns in brain tissues. Accurate categorization supports early diagnosis, treatment planning, and clinical decision-making.
+            </p>
+          </div>
+
+          <div class="row">
+
+            <!-- Pituitary -->
+            <div class="col-md-4">
+              <div class="box">
+                <div class="img-box">
+                  <img src="/static/images/s2.png" alt="Pituitary Tumor">
+                </div>
+                <div class="detail-box">
+                  <h5>Pituitary</h5>
+                  <p>
+                    Pituitary tumor cases are characterized by abnormal growth patterns visible in brain MRI scans. Deep learning–based classification systems analyze texture, shape, and intensity variations to accurately identify pituitary-related tumor features, supporting early diagnosis and effective treatment planning.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Meningioma -->
+            <div class="col-md-4">
+              <div class="box">
+                <div class="img-box">
+                  <img src="/static/images/breast.png" alt="Meningioma">
+                </div>
+                <div class="detail-box">
+                  <h5>Meningioma</h5>
+                  <p>
+                    Meningioma is a slow-growing tumor type that appears as a well-defined mass in brain imaging studies. Deep learning models detect its distinctive texture, shape, and boundaries for accurate classification.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Glioma -->
+            <div class="col-md-4">
+              <div class="box">
+                <div class="img-box">
+                  <img src="/static/images/s4.png" alt="Glioma">
+                </div>
+                <div class="detail-box">
+                  <h5>Glioma</h5>
+                  <p>
+                    Glioma is an aggressive tumor type characterized by irregular boundaries and rapid growth. AI-based brain tumor detection systems analyze complex visual patterns to support early diagnosis and treatment planning.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+  
+
+  <!-- end department section -->
+
+  <!-- about section -->
+  <section class="about_section layout_margin-bottom">
+    <div class="container">
+      <div class="row">
+
+        <!-- Video Column -->
+        <div class="col-md-6">
+          <div class="img-box">
+            <div class="about_video_wrapper">
+              <video autoplay muted playsinline loop>
+                <source src="static/video/brain_network_pingpong.mp4" type="video/mp4">
+                <source src="/static/video/brain_network_pingpong.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text Column -->
+        <div class="col-md-6">
+          <div class="detail-box">
+            <div class="heading_container">
+              <h2>
+                About <span>Brain Tumors</span>
+              </h2>
+            </div>
+
+            <p>
+              Brain tumors are abnormal growths of cells that develop within the brain and can significantly affect normal neurological functions. These tumors may be benign (non-cancerous) or malignant (cancerous), with varying growth patterns, shapes, and severity. Brain tumors can impact memory, vision, speech, motor control, and other critical functions.
+            </p>
+
+            <p>
+              Early and accurate detection is critical for effective treatment planning and improved patient outcomes. Medical imaging techniques such as MRI scans play a vital role in diagnosis. However, manual interpretation of these images is time-consuming and subject to human error. To address this challenge, deep learning–based image segmentation systems automatically analyze medical images to precisely locate and highlight tumor regions.
+            </p>
+
+            <p>
+              By leveraging advanced convolutional neural networks, this project aims to assist healthcare professionals in faster diagnosis, improved accuracy, and reliable clinical decision-making. Automated tumor segmentation not only reduces diagnostic workload but also supports early intervention, treatment monitoring, and improved patient care.
+            </p>
+
+            <a href="https://en.wikipedia.org/wiki/Brain_tumor" target="_blank">
+              Read More
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- end about section -->
+
+  <!-- doctor section -->
+  <section class="doctor_section layout_padding">
+    <div class="container">
+
+      <div class="heading_container heading_center">
+        <h2>
+          Our Specialists
+        </h2>
+        <p class="col-md-10 mx-auto px-0" style="color:azure;">
+          Our team of experienced medical specialists brings extensive expertise in diagnosing and treating brain tumors. By combining clinical excellence with advanced AI-assisted diagnostic tools, they ensure accurate interpretation of medical images and improved patient outcomes.
+        </p>
+      </div>
+
+      <div class="row">
+
+        <!-- Specialist 1 -->
+        <div class="col-sm-6 col-lg-4 mx-auto">
+          <div class="box">
+            <div class="img-box">
+              <img src="/static/images/DB1.jpg" alt="Doctor Image">
+            </div>
+            <div class="detail-box">
+              <div class="social_box">
+                <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-youtube" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+              </div>
+              <h5>
+                Dr. Sharada Bhavana P<br>
+                M.B.B.S., M.S.
+              </h5>
+              <h6>
+                Brain Tumor Specialist
+              </h6>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specialist 2 -->
+        <div class="col-sm-6 col-lg-4 mx-auto">
+          <div class="box">
+            <div class="img-box">
+              <img src="/static/images/DB2.jpg" alt="Doctor Image">
+            </div>
+            <div class="detail-box">
+              <div class="social_box">
+                <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-youtube" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+              </div>
+              <h5>
+                Dr. Sathish Manivel<br>
+                M.B.B.S., D.N.B., M.Ch.
+              </h5>
+              <h6>
+                Neuro & Oncological Specialist
+              </h6>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specialist 3 -->
+        <div class="col-sm-6 col-lg-4 mx-auto">
+          <div class="box">
+            <div class="img-box">
+              <img src="/static/images/DB3.jpg" alt="Doctor Image">
+            </div>
+            <div class="detail-box">
+              <div class="social_box">
+                <a href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-youtube" aria-hidden="true"></i></a>
+                <a href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+              </div>
+              <h5>
+                Prof. V. B. Narayana Murthy<br>
+                M.B.B.S., F.R.C.S. (Glasgow)
+              </h5>
+              <h6>
+                Neuro & Radiological Specialist
+              </h6>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="btn-box">
+        <a href="">
+          View All Specialists
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  
+  <!-- end doctor section -->
+  <br><br>
+
+  <!-- client section -->
+  <section class="client_section layout_padding-bottom">
+    <div class="container">
+      <div class="heading_container heading_center">
+        <h2>
+          Technologies
+        </h2>
+      </div>
+      <div id="carouselExample2Controls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="row">
+              <div class="col-md-11 col-lg-10 mx-auto">
+                <div class="box">
+                  <div class="img-box">
+                    <img src="/static/images/neural-network.png" alt="U-NET" />
+                  </div>
+                  <div class="detail-box">
+                    <div class="name">
+                      <h6>
+                        U-NET
+                      </h6>
+                    </div>
+                    <p>
+                      "Utilizing U-Net for brain tumor segmentation has significantly improved our diagnostic accuracy. The integration with Django allowed for a seamless deployment of our models, making it easier to manage and scale our solutions effectively."
+                    </p>
+                    <i class="fa fa-quote-left" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="row">
+              <div class="col-md-11 col-lg-10 mx-auto">
+                <div class="box">
+                  <div class="img-box">
+                    <img src="/static/images/deep-learning.png" alt="Deep Learning" />
+                  </div>
+                  <div class="detail-box">
+                    <div class="name">
+                      <h6>
+                        DEEP LEARNING
+                      </h6>
+                    </div>
+                    <p>
+                      "Our deep learning models are trained on annotated brain MRI datasets to recognize complex patterns and boundaries. Combined with Django for our web interface, it enabled us to deliver a highly interactive and efficient system for our users."
+                    </p>
+                    <i class="fa fa-quote-left" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="row">
+              <div class="col-md-11 col-lg-10 mx-auto">
+                <div class="box">
+                  <div class="img-box">
+                    <img src="/static/images/frame.png" alt="Django" />
+                  </div>
+                  <div class="detail-box">
+                    <div class="name">
+                      <h6>
+                        Django Framework
+                      </h6>
+                    </div>
+                    <p>
+                      "Integrating Django with advanced technologies like U-Net has been a game-changer for our application development. The combination has allowed us to efficiently manage complex data workflows and improve overall performance."
+                    </p>
+                    <i class="fa fa-quote-left" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel_btn-container">
+          <a class="carousel-control-prev" href="#carouselExample2Controls" role="button" data-slide="prev">
+            <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExample2Controls" role="button" data-slide="next">
+            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+  
+  {% endif %}
+  <!-- jQery -->
+  <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+  <!-- popper js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <!-- bootstrap js -->
+  <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+  <!-- owl slider -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <!-- custom js -->
+  <script type="text/javascript" src="/static/js/custom.js"></script>
+  <!-- Google Map -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
+  </script>
+  <!-- End Google Map -->
+
+</body>
+
+</html>
+
+<script>
+const video = document.querySelector('.bg-video');
+
+if (video) {
+    video.src = '/static/video/result_0_pingpong.webm';
+
+    const maxDuration = 5.3;
+    // CHANGE SPEED HERE: 1.0 = normal, 0.5 = half speed, 2.0 = double speed
+    const loopSpeed = 0.40; 
+
+    function runPreciseLoop() {
+        // Check if we are inside the last 1.0 second loop section
+        if (video.currentTime >= maxDuration - 0.7) {
+            video.playbackRate = loopSpeed; // Apply your custom speed
+        } else {
+            video.playbackRate = 1.0; // Normal speed for the intro
+        }
+
+        // Catch it right before the 5.5s mark and loop back to 4.5s
+        if (video.currentTime >= maxDuration - 0.03) { 
+            video.currentTime = maxDuration - 0.7; 
+            
+            if (video.paused) {
+                video.play();
+            }
+        }
+        
+        requestAnimationFrame(runPreciseLoop);
+    }
+
+    video.addEventListener('play', () => {
+        requestAnimationFrame(runPreciseLoop);
+    });
+}
+</script>

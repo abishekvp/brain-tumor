@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Brain Tumor Segmentation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      color: #1a1f36;
+      box-sizing: border-box;
+      word-wrap: break-word;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Ubuntu, sans-serif;
+    }
+    body {
+      min-height: 100%;
+      background-color: #1a1f36;
+    }
+    h1 {
+      letter-spacing: -1px;
+    }
+    a {
+      color: #6d94aa;
+      text-decoration: unset;
+    }
+
+    /* ---- Video Background ---- */
+    .login-root {
+      background: #1a1f36;
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    .login-video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .login-video-bg video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    .login-video-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    /* Fallback gradient if video fails */
+    .login-video-bg .fallback-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0f1f 0%, #1a2a4a 50%, #0a1a3a 100%);
+      z-index: 0;
+    }
+
+    /* ---- Form container (above video) ---- */
+    .login-content {
+      position: relative;
+      z-index: 2;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .flex-flex {
+      display: flex;
+    }
+    .align-center {
+      align-items: center;
+    }
+    .center-center {
+      align-items: center;
+      justify-content: center;
+    }
+    .box-root {
+      box-sizing: border-box;
+    }
+    .flex-direction--column {
+      flex-direction: column;
+    }
+    .padding-top--24 {
+      padding-top: 24px;
+    }
+    .padding-top--48 {
+      padding-top: 48px;
+    }
+    .padding-bottom--24 {
+      padding-bottom: 24px;
+    }
+    .padding-horizontal--48 {
+      padding: 48px;
+    }
+    .padding-bottom--15 {
+      padding-bottom: 15px;
+    }
+    .flex-justifyContent--center {
+      justify-content: center;
+    }
+
+    /* ---- Transparent Form ---- */
+    .formbg {
+      margin: 0px auto;
+      width: 100%;
+      max-width: 448px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 60px 0px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    .formbg:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .formbg-inner {
+      padding: 30px 30px 20px;
+    }
+    span {
+      display: block;
+      font-size: 20px;
+      line-height: 28px;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    label {
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      display: block;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    }
+    .reset-pass a,
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      display: block;
+    }
+    .reset-pass > a {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .grid--50-50 {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      align-items: center;
+    }
+
+    .field input {
+      font-size: 16px;
+      line-height: 28px;
+      padding: 8px 16px;
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      outline-color: rgba(84, 105, 212, 0.6);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      color: #fff;
+      transition: all 0.3s;
+    }
+    .field input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .field input:focus {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(84, 105, 212, 0.6);
+      box-shadow: 0 0 20px rgba(84, 105, 212, 0.15);
+    }
+
+    input[type="submit"] {
+      background: linear-gradient(135deg, #5469d4 0%, #3a4fb8 100%);
+      box-shadow: 0 4px 15px rgba(84, 105, 212, 0.3);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 16px;
+      width: 100%;
+      transition: all 0.3s;
+    }
+    input[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(84, 105, 212, 0.5);
+      background: linear-gradient(135deg, #6a7de0 0%, #4a5fc8 100%);
+    }
+
+    .field-checkbox input {
+      width: 20px;
+      height: 15px;
+      margin-right: 5px;
+      box-shadow: unset;
+      min-height: unset;
+    }
+    .field-checkbox label {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      color: #fff;
+    }
+    a.ssolink {
+      display: block;
+      text-align: center;
+      font-weight: 600;
+    }
+    .footer-link span {
+      font-size: 14px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+    }
+    .footer-link span a {
+      color: #7fd3ed;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .footer-link span a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+    .listing a {
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+      margin: 0 10px;
+      transition: color 0.3s;
+    }
+    .listing a:hover {
+      color: #fff;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      background: rgba(220, 80, 80, 0.25);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(220, 80, 80, 0.3);
+    }
+    .alert strong {
+      color: #ff8a8a;
+      display: block;
+    }
+    .close {
+      float: right;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      color: #fff;
+      opacity: 0.6;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+    }
+    .close:hover {
+      opacity: 1;
+    }
+
+    /* ---- Password eye toggle ---- */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .password-wrapper input {
+      padding-right: 45px !important;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      user-select: none;
+      transition: color 0.2s;
+      z-index: 5;
+    }
+    .toggle-password i {
+      color: inherit;
+    }
+    .toggle-password:hover {
+      color: #7fd3ed;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .formbg-inner {
+        padding: 20px 16px;
+      }
+      .padding-horizontal--48 {
+        padding: 20px 16px;
+      }
+      .login-content {
+        padding: 20px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-root">
+
+    <!-- Video Background -->
+    <div class="login-video-bg">
+      <!-- Fallback gradient -->
+      <div class="fallback-bg"></div>
+      <video autoplay muted loop playsinline id="bgVideo">
+        <source src="static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.webm" type="video/webm">
+        <source src="/static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.webm" type="video/webm">
+        <!-- Try MP4 fallback -->
+        <source src="static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.mp4" type="video/mp4">
+        <source src="/static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Content -->
+    <div class="login-content">
+      <div class="box-root flex-flex flex-direction--column" style="flex-grow: 1; justify-content: center;">
+
+        <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
+          <h1 style="color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.6); font-weight: 700;">
+            <a href="#" style="color: #fff; text-decoration: none; letter-spacing: 1px;">Register</a>
+          </h1>
+        </div>
+
+        <div class="formbg-outer">
+          <div class="formbg">
+            <div class="formbg-inner">
+              <span class="padding-bottom--15" style="color: #fff; font-weight: 500; letter-spacing: 0.5px;">Create your account</span>
+
+              <form method="post" id="stripe-login">
+                {% csrf_token %}
+                {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                  <div id="form_errors">
+                    {% for key, value in form.errors.items %}
+                    <strong style="color: #ff8a8a;">{{ value }}</strong>
+                    {% endfor %}
+                  </div>
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                {% endif %}
+
+                <div class="field padding-bottom--24">
+                  <label for="first_name">First Name</label>
+                  {{ form.first_name }}
+                </div>
+                <div class="field padding-bottom--24">
+                  <label for="last_name">Last Name</label>
+                  {{ form.last_name }}
+                </div>
+                <div class="field padding-bottom--24">
+                  <label for="username">User Name</label>
+                  {{ form.username }}
+                </div>
+                <div class="field padding-bottom--24">
+                  <label for="email">Email</label>
+                  {{ form.email }}
+                </div>
+                <div class="field padding-bottom--24">
+                  <div class="grid--50-50">
+                    <label for="password">Password</label>
+                    <div class="reset-pass"></div>
+                  </div>
+                  <div class="password-wrapper">
+                    {{ form.password1 }}
+                    <span class="toggle-password" onclick="togglePassword(this)"><i class="fas fa-eye"></i></span>
+                  </div>
+                </div>
+                <div class="field padding-bottom--24">
+                  <div class="grid--50-50">
+                    <label for="password2">Confirm Password</label>
+                    <div class="reset-pass"></div>
+                  </div>
+                  <div class="password-wrapper">
+                    {{ form.password2 }}
+                    <span class="toggle-password" onclick="togglePassword(this)"><i class="fas fa-eye"></i></span>
+                  </div>
+                </div>
+
+                <div class="field padding-bottom--24">
+                  <input type="submit" name="submit" value="Continue">
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="footer-link padding-top--24">
+            <span>Already have an account? <a href="{% url 'login' %}">Sign in</a></span>
+            <div class="listing padding-top--24 padding-bottom--24 flex-flex center-center">
+              <span><a href="#">© BRAIN TUMOR SEGMENTATION</a></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Ensure video plays and handles errors
+    document.addEventListener('DOMContentLoaded', function() {
+      var video = document.getElementById('bgVideo');
+      
+      // Force video to play with muted autoplay
+      video.muted = true;
+      video.setAttribute('playsinline', '');
+      
+      var playPromise = video.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(function() {
+          console.log('Video playing successfully');
+        }).catch(function(error) {
+          console.log('Auto-play was prevented:', error);
+          // Try again with a click handler
+          document.addEventListener('click', function playOnClick() {
+            video.play().then(function() {
+              console.log('Video started on click');
+              document.removeEventListener('click', playOnClick);
+            }).catch(function(e) {
+              console.log('Still unable to play:', e);
+            });
+          });
+        });
+      }
+      
+      // If video fails to load, show fallback
+      video.addEventListener('error', function(e) {
+        console.log('Video error:', e);
+        // Try reloading the video
+        setTimeout(function() {
+          video.load();
+          video.play().catch(function() {});
+        }, 1000);
+      });
+    });
+
+    // Toggle password visibility
+    function togglePassword(el) {
+      const input = el.parentElement.querySelector('input');
+      const icon = el.querySelector('i');
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        }
+      } else {
+        input.type = 'password';
+        if (icon) {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>

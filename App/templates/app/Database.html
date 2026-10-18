@@ -1,0 +1,1032 @@
+{% include 'chatbot/widget.html' %}
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database · Brain Tumor Segmentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ============================================================
+                   ROOT VARIABLES
+                   ============================================================ */
+        :root {
+            --primary-dark: #0a2a3f;
+            --primary-mid: #1a5276;
+            --primary-blue: #2e86c1;
+            --primary-light: #5dade2;
+            --accent-teal: #1abc9c;
+            --accent-gold: #f39c12;
+            --bg-light: #f0f5fa;
+            --bg-card: #ffffff;
+            --text-dark: #0a1e2b;
+            --text-mid: #2c4a62;
+            --text-light: #6b8fa8;
+            --border-light: #dce6ef;
+            --shadow-sm: 0 4px 20px rgba(10, 42, 63, 0.08);
+            --shadow-md: 0 12px 40px rgba(10, 42, 63, 0.15);
+            --shadow-lg: 0 20px 60px rgba(10, 42, 63, 0.20);
+            --radius-lg: 32px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(46, 134, 193, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(26, 82, 118, 0.04) 0%, transparent 50%);
+        }
+
+        /* ============================================================
+                   NAVIGATION
+                   ============================================================ */
+        .nav-custom {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-mid));
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 20px rgba(10, 42, 63, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 3px solid var(--accent-teal);
+        }
+
+        .nav-custom .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-custom .brand {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-custom .brand i {
+            color: var(--accent-teal);
+            font-size: 2rem;
+        }
+
+        .nav-custom .brand span {
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-custom .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-custom .nav-links a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-custom .nav-links a:hover,
+        .nav-custom .nav-links a.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .nav-custom .nav-links a i {
+            font-size: 0.9rem;
+        }
+
+        /* ============================================================
+                   MAIN CONTAINER
+                   ============================================================ */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* ============================================================
+                   PAGE HEADER
+                   ============================================================ */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .page-header .title-section h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .page-header .title-section h1 i {
+            color: var(--primary-blue);
+        }
+
+        .page-header .title-section .subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-header .stats {
+            display: flex;
+            gap: 2rem;
+            background: var(--bg-card);
+            padding: 0.8rem 2rem;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+
+        .page-header .stats .stat-item {
+            text-align: center;
+        }
+
+        .page-header .stats .stat-item .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-mid);
+        }
+
+        .page-header .stats .stat-item .label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============================================================
+                   SEARCH & FILTER
+                   ============================================================ */
+        .search-section {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            background: var(--bg-card);
+            padding: 1.2rem 1.8rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            align-items: center;
+        }
+
+        .search-section .search-box {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            background: var(--bg-light);
+            border-radius: 30px;
+            padding: 0.3rem 0.3rem 0.3rem 1.2rem;
+            border: 2px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .search-section .search-box:focus-within {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(46, 134, 193, 0.12);
+        }
+
+        .search-section .search-box i {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .search-section .search-box input {
+            border: none;
+            background: transparent;
+            padding: 0.7rem 0.8rem;
+            font-size: 0.95rem;
+            flex: 1;
+            outline: none;
+            color: var(--text-dark);
+            font-family: inherit;
+        }
+
+        .search-section .search-box input::placeholder {
+            color: var(--text-light);
+        }
+
+        .search-section .search-box button {
+            background: var(--primary-mid);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-section .search-box button:hover {
+            background: var(--primary-blue);
+            transform: scale(1.02);
+        }
+
+        .search-section .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-section .filter-tabs .filter-btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            border: 2px solid var(--border-light);
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            color: var(--text-mid);
+        }
+
+        .search-section .filter-tabs .filter-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-mid);
+        }
+
+        .search-section .filter-tabs .filter-btn.active {
+            background: var(--primary-mid);
+            color: #fff;
+            border-color: var(--primary-mid);
+        }
+
+        .search-section .filter-tabs .filter-btn .count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }
+
+        .search-section .filter-tabs .filter-btn.active .count {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* ============================================================
+                   DATABASE GRID
+                   ============================================================ */
+        .db-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .db-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+
+        .db-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-blue);
+        }
+
+        .db-card .card-accent {
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-blue), var(--accent-teal));
+            width: 100%;
+        }
+
+        .db-card .card-image {
+            position: relative;
+            padding: 1rem 1rem 0.5rem;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+        }
+
+        .db-card .card-image img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: var(--transition);
+        }
+
+        .db-card .card-image img:hover {
+            transform: scale(1.02);
+        }
+
+        .db-card .card-image .image-overlay {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+        }
+
+        .db-card .card-image .image-overlay .badge-label {
+            background: var(--primary-mid);
+            color: #fff;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .db-card .card-image .image-overlay .badge-label.glioma { background: #c0392b; }
+        .db-card .card-image .image-overlay .badge-label.meningioma { background: #e67e22; }
+        .db-card .card-image .image-overlay .badge-label.pituitary { background: #8e44ad; }
+        .db-card .card-image .image-overlay .badge-label.notumor { background: #27ae60; }
+
+        .db-card .card-body {
+            padding: 1rem 1.2rem 1.2rem;
+        }
+
+        .db-card .card-body .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .db-card .card-body .card-title i {
+            color: var(--primary-blue);
+            font-size: 0.9rem;
+        }
+
+        .db-card .card-body .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .db-card .card-body .card-meta .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: var(--text-light);
+        }
+
+        .db-card .card-body .card-meta .meta-item i {
+            color: var(--primary-blue);
+        }
+
+        .db-card .card-body .card-meta .meta-item .label-value {
+            font-weight: 600;
+            color: var(--text-mid);
+        }
+
+        /* ============================================================
+                   EMPTY STATE
+                   ============================================================ */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--border-light);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--border-light);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: var(--text-mid);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+        }
+
+        /* ============================================================
+                   PAGINATION
+                   ============================================================ */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .pagination .page-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: 2px solid var(--border-light);
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--text-mid);
+            font-size: 0.9rem;
+        }
+
+        .pagination .page-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-mid);
+        }
+
+        .pagination .page-btn.active {
+            background: var(--primary-mid);
+            color: #fff;
+            border-color: var(--primary-mid);
+        }
+
+        .pagination .page-btn i {
+            font-size: 0.8rem;
+        }
+
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .footer .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .footer .footer-left i {
+            color: var(--primary-blue);
+            font-size: 1rem;
+        }
+
+        .footer .footer-right {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .footer .footer-right .badge {
+            background: #e8f0f8;
+            padding: 0.15rem 0.8rem;
+            border-radius: 30px;
+            font-weight: 500;
+            color: var(--primary-mid);
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 1024px) {
+            .db-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-custom .container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-custom .nav-links {
+                justify-content: center;
+            }
+
+            .nav-custom .nav-links a {
+                padding: 0.3rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .page-header .title-section h1 {
+                justify-content: center;
+                font-size: 1.8rem;
+            }
+
+            .page-header .title-section .subtitle {
+                justify-content: center;
+            }
+
+            .page-header .stats {
+                justify-content: center;
+                padding: 0.8rem 1rem;
+                gap: 1.5rem;
+            }
+
+            .search-section {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .search-section .search-box {
+                width: 100%;
+            }
+
+            .search-section .filter-tabs {
+                justify-content: center;
+            }
+
+            .db-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .main-container {
+                padding: 1rem 0.8rem;
+            }
+
+            .db-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header .title-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-header .stats .stat-item .number {
+                font-size: 1.3rem;
+            }
+
+            .search-section .search-box input {
+                font-size: 0.85rem;
+            }
+
+            .search-section .search-box button {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.8rem;
+            }
+
+            .db-card .card-image {
+                min-height: 180px;
+            }
+
+            .db-card .card-image img {
+                max-height: 180px;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer .footer-left {
+                justify-content: center;
+            }
+
+            .footer .footer-right {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        /* ============================================================
+                   DARK MODE
+                   ============================================================ */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-light: #0f1e2b;
+                --bg-card: #162a38;
+                --border-light: #1f3a4a;
+                --text-dark: #e8f0f8;
+                --text-mid: #b0c8d8;
+                --text-light: #7a9bb5;
+            }
+
+            body {
+                background: #0a1a26;
+            }
+
+            .db-card {
+                border-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .db-card .card-image {
+                background: #12222e;
+            }
+
+            .page-header .stats {
+                background: #162a38;
+                border-color: #1f3a4a;
+            }
+
+            .search-section {
+                background: #162a38;
+                border-color: #1f3a4a;
+            }
+
+            .search-section .search-box {
+                background: #12222e;
+                border-color: #1f3a4a;
+            }
+
+            .search-section .search-box input {
+                color: #e8f0f8;
+            }
+
+            .search-section .search-box input::placeholder {
+                color: #4a6a7a;
+            }
+
+            .search-section .filter-tabs .filter-btn {
+                border-color: #1f3a4a;
+                color: #b0c8d8;
+            }
+
+            .search-section .filter-tabs .filter-btn:hover {
+                border-color: var(--primary-blue);
+            }
+
+            .search-section .filter-tabs .filter-btn.active {
+                background: var(--primary-mid);
+                border-color: var(--primary-mid);
+                color: #fff;
+            }
+
+            .empty-state {
+                background: #162a38;
+                border-color: #1f3a4a;
+            }
+
+            .pagination .page-btn {
+                background: #162a38;
+                border-color: #1f3a4a;
+                color: #b0c8d8;
+            }
+
+            .pagination .page-btn:hover {
+                border-color: var(--primary-blue);
+                color: #e8f0f8;
+            }
+
+            .pagination .page-btn.active {
+                background: var(--primary-mid);
+                color: #fff;
+                border-color: var(--primary-mid);
+            }
+
+            .footer .footer-right .badge {
+                background: #1a2f3f;
+                color: #7aafd0;
+            }
+
+            .footer {
+                border-color: #1f3a4a;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="nav-custom">
+        <div class="container">
+            <a href="#" class="brand">
+            <i style="margin-top: 2%;" class="fas fa-brain"></i>
+            <span style="color:rgb(140, 250, 226);">Qubit Brain</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="{% url 'model' %}"><i class="fas fa-robot"></i> Model</a></li>
+                <li><a href="{% url 'Database' %}" class="active"><i class="fas fa-database"></i> Database</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main-container">
+
+        <!-- ===== PAGE HEADER ===== -->
+        <div class="page-header">
+            <div class="title-section">
+                <h1>
+                    <i class="fas fa-database"></i>
+                    Image Database
+                </h1>
+                <div class="subtitle">
+                    <i class="fas fa-brain"></i>
+                    Browse all brain MRI scans with classification labels
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="number">{{ models|length }}</div>
+                    <div class="label">Total Images</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">
+                        {{ models|dictsort:"label"|length }}
+                    </div>
+                    <div class="label">Unique Labels</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SEARCH & FILTER ===== -->
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search by label, ID, or description..." id="searchInput">
+                <button onclick="filterCards()">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </div>
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-btn active" data-filter="all">
+                    All <span class="count">{{ models|length }}</span>
+                </button>
+                {% with glioma_count=0 meningioma_count=0 pituitary_count=0 notumor_count=0 %}
+                    {% for model in models %}
+                        {% if model.label|lower == 'glioma' %}{% with glioma_count=glioma_count|add:1 %}{% endwith %}{% endif %}
+                        {% if model.label|lower == 'meningioma' %}{% with meningioma_count=meningioma_count|add:1 %}{% endwith %}{% endif %}
+                        {% if model.label|lower == 'pituitary' %}{% with pituitary_count=pituitary_count|add:1 %}{% endwith %}{% endif %}
+                        {% if model.label|lower == 'no tumor' %}{% with notumor_count=notumor_count|add:1 %}{% endwith %}{% endif %}
+                    {% endfor %}
+                {% endwith %}
+                <button class="filter-btn" data-filter="glioma">
+                    <i class="fas fa-bolt" style="color: #c0392b;"></i> Glioma
+                </button>
+                <button class="filter-btn" data-filter="meningioma">
+                    <i class="fas fa-shield-alt" style="color: #e67e22;"></i> Meningioma
+                </button>
+                <button class="filter-btn" data-filter="pituitary">
+                    <i class="fas fa-dna" style="color: #8e44ad;"></i> Pituitary
+                </button>
+                <button class="filter-btn" data-filter="no tumor">
+                    <i class="fas fa-check-circle" style="color: #27ae60;"></i> No Tumor
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== DATABASE GRID ===== -->
+        {% if models %}
+            <div class="db-grid" id="dbGrid">
+                {% for model in models %}
+                    <div class="db-card" data-label="{{ model.label|lower }}">
+                        <div class="card-accent"></div>
+                        <div class="card-image">
+                            {% if model.image %}
+                                <img src="{{ model.image.url }}" alt="{{ model.label }} MRI scan" loading="lazy">
+                                <div class="image-overlay">
+                                    <span class="badge-label 
+                                        {% if model.label|lower == 'glioma' %}glioma
+                                        {% elif model.label|lower == 'meningioma' %}meningioma
+                                        {% elif model.label|lower == 'pituitary' %}pituitary
+                                        {% elif model.label|lower == 'no tumor' %}notumor{% endif %}">
+                                        {{ model.label|upper }}
+                                    </span>
+                                </div>
+                            {% else %}
+                                <div style="padding: 2rem; text-align: center; color: var(--text-light);">
+                                    <i class="fas fa-image" style="font-size: 3rem; display: block; margin-bottom: 0.5rem;"></i>
+                                    No image available
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">
+                                <i class="fas fa-tag"></i>
+                                {{ model.label|default:"Unlabeled" }}
+                            </div>
+                            <div class="card-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-id-card"></i>
+                                    ID: <span class="label-value">#{{ forloop.counter }}</span>
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Added: <span class="label-value">Recent</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-database"></i>
+                <h3>No Images Found</h3>
+                <p>There are currently no images in the database. Upload some scans to get started.</p>
+            </div>
+        {% endif %}
+
+        <!-- ===== PAGINATION ===== -->
+        <div class="pagination">
+            <button class="page-btn"><i class="fas fa-chevron-left"></i> Prev</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn"><i class="fas fa-ellipsis-h"></i></button>
+            <button class="page-btn">Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            <div class="footer-left">
+                <i class="fas fa-brain"></i>
+                <span>Brain Tumor Segmentation System v2.0</span>
+                <span>•</span>
+                <span><i class="fas fa-images"></i> {{ models|length }} scans</span>
+            </div>
+            <div class="footer-right">
+                <span class="badge"><i class="fas fa-shield-alt"></i> HIPAA Compliant</span>
+                <span class="badge"><i class="fas fa-microscope"></i> Clinical AI</span>
+                <span><i class="fas fa-sync-alt"></i> Auto-updated</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ===== FILTER FUNCTIONALITY =====
+        function filterCards() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.db-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const label = card.getAttribute('data-label') || '';
+                const matchesSearch = label.includes(searchTerm) || 
+                                     card.textContent.toLowerCase().includes(searchTerm);
+                
+                if (matchesSearch) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update filter button counts
+            updateFilterCounts();
+        }
+
+        // ===== FILTER BUTTONS =====
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.getAttribute('data-filter');
+                const cards = document.querySelectorAll('.db-card');
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const label = card.getAttribute('data-label') || '';
+                    if (filter === 'all' || label === filter) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Update count on active button
+                const countSpan = this.querySelector('.count');
+                if (countSpan) {
+                    countSpan.textContent = visibleCount;
+                }
+            });
+        });
+
+        // ===== SEARCH ON ENTER =====
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                filterCards();
+            }
+        });
+
+        // ===== UPDATE FILTER COUNTS =====
+        function updateFilterCounts() {
+            const cards = document.querySelectorAll('.db-card');
+            const total = cards.length;
+            const visible = Array.from(cards).filter(c => c.style.display !== 'none').length;
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const filter = btn.getAttribute('data-filter');
+                const countSpan = btn.querySelector('.count');
+                if (countSpan) {
+                    if (filter === 'all') {
+                        countSpan.textContent = visible;
+                    } else {
+                        const count = Array.from(cards).filter(c => 
+                            c.getAttribute('data-label') === filter && c.style.display !== 'none'
+                        ).length;
+                        countSpan.textContent = count;
+                    }
+                }
+            });
+        }
+
+        // ===== PAGINATION (visual only - can be extended) =====
+        document.querySelectorAll('.pagination .page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.classList.contains('active')) {
+                    document.querySelectorAll('.pagination .page-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // ===== ANIMATION ON SCROLL =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 50);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.db-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+
+        console.log('Brain Tumor Segmentation Database loaded successfully!');
+    </script>
+
+</body>
+</html>

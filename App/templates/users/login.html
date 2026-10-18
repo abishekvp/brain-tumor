@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Brain Tumor Segmentation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Open Sans", sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      padding: 0 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ---- Video Background ---- */
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .video-bg video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    .video-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 1;
+    }
+
+    /* Fallback gradient if video fails */
+    .video-bg .fallback-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0f1f 0%, #1a2a4a 50%, #0a1a3a 100%);
+      z-index: 0;
+    }
+
+    /* ---- Glassmorphism Wrapper ---- */
+    .wrapper {
+      position: relative;
+      z-index: 2;
+      width: 400px;
+      border-radius: 20px;
+      padding: 40px 35px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 60px 0px;
+      transition: all 0.3s ease;
+    }
+    .wrapper:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 25px;
+      color: #fff;
+      font-weight: 600;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+      letter-spacing: 1px;
+    }
+
+    .input-field {
+      position: relative;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      margin: 18px 0;
+      transition: border-color 0.3s;
+    }
+    .input-field:focus-within {
+      border-bottom-color: #7fd3ed;
+    }
+
+    .input-field label {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      pointer-events: none;
+      transition: 0.25s ease;
+    }
+
+    .input-field input {
+      width: 100%;
+      height: 45px;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      color: #fff;
+      padding: 0 5px;
+    }
+    .input-field input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .input-field input:focus~label,
+    .input-field input:valid~label {
+      font-size: 0.75rem;
+      top: 0px;
+      transform: translateY(-100%);
+      color: #7fd3ed;
+    }
+
+    /* ---- Password field with icon eye toggle ---- */
+    .password-field {
+      position: relative;
+    }
+
+    .password-field input {
+      padding-right: 40px; /* space for the eye icon */
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      user-select: none;
+      line-height: 1;
+      z-index: 5;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .toggle-password:hover {
+      color: #7fd3ed;
+      transform: translateY(-50%) scale(1.15);
+    }
+
+    .forget {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0 30px 0;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    #remember {
+      accent-color: #7fd3ed;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .forget label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .forget label p {
+      margin-left: 8px;
+      font-size: 14px;
+    }
+
+    .wrapper a {
+      color: #7fd3ed;
+      text-decoration: none;
+      transition: color 0.3s;
+      font-weight: 500;
+    }
+
+    .wrapper a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    button[type="submit"] {
+      background: linear-gradient(135deg, #5469d4 0%, #3a4fb8 100%);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      padding: 14px 20px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(84, 105, 212, 0.3);
+      letter-spacing: 0.5px;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(84, 105, 212, 0.5);
+      background: linear-gradient(135deg, #6a7de0 0%, #4a5fc8 100%);
+    }
+
+    .register {
+      text-align: center;
+      margin-top: 25px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+    }
+
+    .register a {
+      color: #7fd3ed;
+      font-weight: 600;
+    }
+
+    .register a:hover {
+      color: #fff;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .wrapper {
+        width: 100%;
+        padding: 30px 20px;
+        margin: 0 10px;
+      }
+      h2 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video Background -->
+  <div class="video-bg">
+    <div class="fallback-bg"></div>
+    <video autoplay muted loop playsinline id="bgVideo">
+      <source src="static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.webm" type="video/webm">
+      <source src="/static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.webm" type="video/webm">
+      <source src="static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.mp4" type="video/mp4">
+      <source src="/static/video/stock-footage-abstract-blue-colored-neuron-cell-in-the-brain-on-black-motion-background-selective-focus-used.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- Login Form -->
+  <div class="wrapper">
+    <form method="post">
+      {% csrf_token %}
+      <h2>Welcome Back</h2>
+
+      <div class="input-field">
+        <input type="text" name="username" required autocomplete="username">
+        <label>Username</label>
+      </div>
+
+      <!-- Password field with icon eye toggle -->
+      <div class="input-field password-field">
+        <input type="password" name="password" id="passwordInput" required autocomplete="current-password">
+        <label>Password</label>
+        <span class="toggle-password" onclick="togglePassword(this)"><i class="fas fa-eye"></i></span>
+      </div>
+
+      <div class="forget">
+        <label for="remember">
+          <input type="checkbox" id="remember">
+          <p>Remember me</p>
+        </label>
+      </div>
+
+      <button type="submit">Log In</button>
+
+      <div class="register">
+        <p>Don't have an account? <a href="{% url 'users-register' %}">Register</a></p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var video = document.getElementById('bgVideo');
+      video.muted = true;
+      video.setAttribute('playsinline', '');
+
+      var playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.then(function() {
+          console.log('Video playing');
+        }).catch(function(error) {
+          console.log('Auto-play prevented:', error);
+          document.addEventListener('click', function playOnClick() {
+            video.play().then(function() {
+              document.removeEventListener('click', playOnClick);
+            }).catch(function(e) {});
+          });
+        });
+      }
+
+      video.addEventListener('error', function(e) {
+        console.log('Video error:', e);
+        setTimeout(function() {
+          video.load();
+          video.play().catch(function() {});
+        }, 1000);
+      });
+    });
+
+    // Icon-based password visibility toggle
+    function togglePassword(el) {
+      const input = el.parentElement.querySelector('input');
+      const icon = el.querySelector('i');
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        }
+      } else {
+        input.type = 'password';
+        if (icon) {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>

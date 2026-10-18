@@ -1,0 +1,54 @@
+{% include 'chatbot/widget.html' %}
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEPLOY</title>
+
+<style>
+                body{
+                    background:url("");
+                    background-repeat: no-repeat;
+                    background-attachment: fixed;
+                    background-size: 100% 100%;
+                }
+                .container{
+                    width: 400px;
+                    height: 200px;
+                    background-color: rgb(213, 216, 173, 0.3);
+                    border-style: solid;
+                }
+                form{
+                    margin-top: 50px;
+                    margin-left: 40px;
+                }
+
+</style>
+</head>
+<body>
+    <center><h1 style="color: white;">BREAST CANCER CLASSIFICATION AND SEGMENTATION</h1><br><br><br>
+        <a href="/"><h3 style="color: white;font-size: 25px;">HOME<h3></a>
+        <div class="container">
+            <form action="{% url 'model' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p style="margin-right: 170px;">*This field is requied</p>
+                {{ form.as_p }}
+                <input type="submit" Value='UPLOAD' style="margin-right: 230px;">
+            </form><br><br><br><br>
+        </div>
+    </center>
+    {% if image_uri %}
+    <center>
+
+        <h3 style="color: white; font-size: 25px;"> {{output}}</h3><br>
+        <h4 style="color: white;">ORIGINAL_IMAGE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MASK IMAGE</h4>
+        
+        <img src="{{ obj.image.url }}" height="200" width="200">
+        <img src={{ image_uri }} height="200" width="200">
+    </center>
+    {% endif %}
+</body>
+</html>
