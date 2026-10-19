@@ -24,6 +24,8 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from PIL import Image, ImageOps
+import tensorflow as tf
+tf.get_logger().setLevel("ERROR")
 from tensorflow.keras.layers import Conv2DTranspose
 from tensorflow.keras.models import load_model
 from torchvision import transforms

@@ -6,7 +6,13 @@ import sys
 
 def main():
     """Run administrative tasks."""
+    os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "0")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+    try:
+        import logging
+        logging.getLogger("tensorflow").setLevel(logging.ERROR)
+    except Exception:
+        pass
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
